@@ -145,6 +145,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameOverState.cpp" />
+    <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Font.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameOverState.hpp" />
+    <ClInclude Include="GameServer.hpp" />
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="Label.hpp" />
     <ClInclude Include="MenuOptions.hpp" />
@@ -199,6 +201,8 @@
     <ClInclude Include="MissionStatus.hpp" />
     <ClInclude Include="MusicPlayer.hpp" />
     <ClInclude Include="MusicThemes.hpp" />
+    <ClInclude Include="NetworkNode.hpp" />
+    <ClInclude Include="NetworkProtocol.hpp" />
     <ClInclude Include="Particle.hpp" />
     <ClInclude Include="ParticleNode.hpp" />
     <ClInclude Include="ParticleType.hpp" />
