@@ -12,6 +12,9 @@
 #include "BloomEffect.hpp"
 #include "SoundPlayer.hpp"
 
+#include "NetworkNode.hpp"
+#include "NetworkProtocol.hpp"
+
 #include <array>
 
 class World : private sf::NonCopyable
