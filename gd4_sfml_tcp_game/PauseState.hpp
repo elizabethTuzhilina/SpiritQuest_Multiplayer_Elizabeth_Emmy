@@ -7,7 +7,7 @@
 class PauseState : public State
 {
 public:
-	PauseState(StateStack& stack, Context context);
+	PauseState(StateStack& stack, Context context, bool lets_updates_through = false);
 	~PauseState();
 	virtual void Draw() override;
 	virtual bool Update(sf::Time dt) override;
@@ -17,5 +17,6 @@ private:
 	sf::Sprite m_background_sprite;
 	sf::Text m_paused_text;
 	sf::Text m_instruction_text;
+	bool m_lets_updates_through;
 };
 

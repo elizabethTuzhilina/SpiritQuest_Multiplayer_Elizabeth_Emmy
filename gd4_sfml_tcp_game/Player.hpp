@@ -4,6 +4,11 @@
 #include "Action.hpp"
 #include "CommandQueue.hpp"
 #include "MissionStatus.hpp"
+
+#include "KeyBinding.hpp"
+#include "CommandQueue.hpp"
+#include <SFML/Network/TcpSocket.hpp>
+
 #include <map>
 
 class Command;
@@ -14,24 +19,32 @@ class Player
 	// ET: adding constructor to handle player IDs 
 public:
 	//enum class ID{Player1, Player2};
-	Player(); 
+	Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding);
+	void HandleEvent(const sf::Event& event, CommandQueue& command);
+	void HandleRealTimeInput(CommandQueue& command);
+	void HandleRealtimeNetworkInput(CommandQueue& commands);
 
-	void HandleEvent(const sf::Event& event, CommandQueue& command_queue);
-	void HandleRealTimeInput(CommandQueue& command_queue);
+	//React to events or realtime state changes recevied over the network
+	void HandleNetworkEvent(Action action, CommandQueue& commands);
+	void HandleNetworkRealtimeChange(Action action, bool action_enabled);
 
-	void AssignKey(Action action, sf::Keyboard::Key key);
-	sf::Keyboard::Key GetAssignedKey(Action action) const;
 	void SetMissionStatus(MissionStatus status);
 	MissionStatus GetMissionStatus() const;
 
-private:
-	void InitialiseActions();
-	static bool IsRealTimeAction(Action action);
+	void DisableAllRealtimeActions();
+	bool IsLocal() const;
 
 private:
-	std::map<sf::Keyboard::Key, Action> m_key_binding;
+	void InitialiseActions();
+
+private:
+	const KeyBinding* m_key_binding;
 	std::map<Action, Command> m_action_binding;
+	std::map<Action, bool> m_action_proxies;
 	MissionStatus m_current_mission_status;
+
+	int m_identifier;
+	sf::TcpSocket* m_socket;
 	//ID m_id;//player1 /2 ids
 };
 

@@ -15,6 +15,11 @@ public:
 	Character(CharacterType type, const TextureHolder& textures, const FontHolder& fonts);
 	unsigned int GetCategory() const override;
 
+	//void DisablePickups();
+	int GetIdentifier();
+	void SetIdentifier(int identifier);
+	//int GetMissileAmmo() const;
+
 	void IncreaseFireRate();
 	void IncreaseFireSpread();
 	void CollectMissile(unsigned int count);
@@ -30,6 +35,7 @@ public:
 
 	sf::FloatRect GetBoundingRect() const override;
 	bool IsMarkedForRemoval() const override;
+	//void Remove() ;
 	void PlayLocalSound(CommandQueue& commands, SoundEffect effect);
 
 private:
@@ -67,6 +73,8 @@ private:
 	bool m_show_explosion;
 	bool m_spawned_pickup;
 	bool m_played_explosion_sound;
+
+	int m_identifier;
 
 	
 	

@@ -14,7 +14,7 @@ sf::IpAddress GetAddressFromFile()
 {
 	{
 		//Try to open existing file
-		std::ifstream input_file("ip.txt");
+		std::ifstream input_file("ip.txt.txt");
 		std::string ip_address;
 		if (input_file >> ip_address)
 		{
@@ -23,7 +23,7 @@ sf::IpAddress GetAddressFromFile()
 	}
 
 	//If the open/read failed, create a new file
-	std::ofstream output_file("ip.txt");
+	std::ofstream output_file("ip.txt.txt");
 	std::string local_address = "127.0.0.1";
 	output_file << local_address;
 	return local_address;
@@ -139,7 +139,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 				found_local_plane = true;
 			}
 
-			if (!m_world.GetAircraft(itr->first))
+			if (!m_world.GetCharacter(itr->first))
 			{
 				itr = m_players.erase(itr);
 
@@ -166,7 +166,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			CommandQueue& commands = m_world.GetCommandQueue();
 			for (auto& pair : m_players)
 			{
-				pair.second->HandleRealtimeInput(commands);
+				pair.second->HandleRealTimeInput(commands);
 			}
 		}
 
@@ -230,9 +230,9 @@ bool MultiplayerGameState::Update(sf::Time dt)
 
 			for (sf::Int32 identifier : m_local_player_identifiers)
 			{
-				if (Character* character = m_world.GetAircraft(identifier))
+				if (Character* character = m_world.GetCharacter(identifier))
 				{
-					position_update_packet << identifier << character->getPosition().x << character->getPosition().y << static_cast<sf::Int32>(character->GetHitPoints()) << static_cast<sf::Int32>(character->GetMissileAmmo());
+					position_update_packet << identifier << character->getPosition().x << character->getPosition().y << static_cast<sf::Int32>(character->GetHitPoints());
 				}
 			}
 			m_socket.send(position_update_packet);
@@ -414,7 +414,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			Character* character = m_world.AddCharacter(character_identifier);
 			character->setPosition(character_position);
 			character->SetHitpoints(hitpoints);
-			character->SetMissileAmmo(missile_ammo);
+			//character->SetMissileAmmo(missile_ammo);
 
 			m_players[character_identifier].reset(new Player(&m_socket, character_identifier, nullptr));
 		}
@@ -426,7 +426,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		sf::Int32 character_identifier;
 		packet >> character_identifier;
 
-		m_world.AddAircraft(character_identifier);
+		m_world.AddCharacter(character_identifier);
 		m_players[character_identifier].reset(new Player(&m_socket, character_identifier, GetContext().keys2));
 		m_local_player_identifiers.emplace_back(character_identifier);
 	}
@@ -471,8 +471,8 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		float relative_x;
 		packet >> type >> height >> relative_x;
 
-		m_world.AddEnemy(static_cast<CharacterType>(type), relative_x, height);
-		m_world.SortEnemies();
+		//m_world.AddEnemy(static_cast<CharacterType>(type), relative_x, height);
+		//m_world.SortEnemies();
 	}
 	break;
 
@@ -489,7 +489,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		sf::Int32 type;
 		sf::Vector2f position;
 		packet >> type >> position.x >> position.y;
-		m_world.CreatePickup(position, static_cast<PickupType>(type));
+		//m_world.CreatePickup(position, static_cast<PickupType>(type));
 	}
 	break;
 
@@ -519,7 +519,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 				sf::Vector2f interpolated_position = character->getPosition() + (character_position - character->getPosition()) * 0.1f;
 				character->setPosition(interpolated_position);
 				character->SetHitpoints(hitpoints);
-				character->SetMissileAmmo(ammo);
+				//character->SetMissileAmmo(ammo);
 			}
 		}
 	}

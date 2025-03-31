@@ -5,11 +5,12 @@
 #include "Utility.hpp"
 /*E.T D00245315*/
 
-GameOverState::GameOverState(StateStack& stack, Context context)
+GameOverState::GameOverState(StateStack& stack, Context context, const std::string& text)
     : State(stack, context)
     , m_game_over_text()
     , m_elapsed_time(sf::Time::Zero)
 {
+
     sf::Font& font = context.fonts->Get(Font::kMain);
     sf::Vector2f window_size(context.window->getSize());
 

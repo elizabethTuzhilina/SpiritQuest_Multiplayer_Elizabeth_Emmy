@@ -26,6 +26,11 @@ sf::Vector2f Entity::GetVelocity() const
     
 }
 
+void Entity::SetHitpoints(int points)
+{
+    m_hitpoints = points;
+}
+
 void Entity::Accelerate(sf::Vector2f velocity)
 {
     m_velocity += velocity;
@@ -96,4 +101,9 @@ void Entity::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
     move(m_velocity * dt.asSeconds());
 
+}
+
+void Entity::Remove()
+{
+    Destroy();
 }

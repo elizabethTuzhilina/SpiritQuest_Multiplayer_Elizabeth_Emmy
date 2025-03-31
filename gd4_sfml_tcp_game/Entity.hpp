@@ -10,6 +10,7 @@ public:
 	void SetVelocity(sf::Vector2f velocity);
 	void SetVelocity(float vx, float vy);
 	sf::Vector2f GetVelocity() const;
+	void SetHitpoints(int points);
 	void Accelerate(sf::Vector2f velocity);
 	void Accelerate(float vx, float vy);
 
@@ -18,6 +19,7 @@ public:
 	void Damage(int points);
 	void Deteriorate();
 	void Destroy();
+	void Remove();
 	virtual bool IsDestroyed() const override;
 
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);

@@ -3,54 +3,37 @@
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
 
-//E.T
 SettingsState::SettingsState(StateStack& stack, Context context)
 	: State(stack, context)
 	, m_gui_container()
 {
-	m_background_sprite.setTexture(context.textures->Get(TextureID::kSettingsBackground));
+	m_background_sprite.setTexture(context.textures->Get(TextureID::kTitleScreen));
 
-	m_settings_header.setTexture(context.textures->Get(TextureID::kSettingsHeader));// to load heading image form the 
-	m_settings_header.setPosition(360.f, 40.f);
-	// posistion for player 1 and player 2 on the x axis of screen
-	float p1X = 80.f;
-	float p2X = 500.f;
-
-	//Build key binding buttons and labels for player 1  on the Left
-	AddButtonLabel(Action::kMoveUp, p1X,150.f, "P1 Move Up", context);
-	AddButtonLabel(Action::kMoveDown, p1X, 200.f, "P1 Move Down", context);
-	AddButtonLabel(Action::kMoveRight, p1X, 250.f, "P1 Move Right", context);
-	AddButtonLabel(Action::kMoveLeft, p1X, 300.f, "P1 Move Left", context);
-	AddButtonLabel(Action::kBulletFire, p1X, 350.f, "P1 Fire", context);
-	AddButtonLabel(Action::kMissileFire, p1X, 400.f, "P1 Missile Fire", context);
-
-	//E.T Build key binding buttons and labels for player 2  on the Right
-	AddButtonLabel(Action::kMoveUpP2 , p2X, 150.f, " P2 Move Up", context);
-	AddButtonLabel(Action::kMoveDownP2 , p2X, 200.f, "P2 Move Down", context);
-	AddButtonLabel(Action::kMoveRightP2 , p2X, 250.f, "P2 Move Right", context);
-	AddButtonLabel(Action::kMoveLeftP2 , p2X, 300.f, "P2 Move Left", context);
-	AddButtonLabel(Action::kBulletFireP2 , p2X, 350.f, "P2 Fire", context);
-	AddButtonLabel(Action::kMissileFireP2 , p2X, 400.f, "P2 Missile Fire", context);
+	//Build key binding buttons and labels
+	for (std::size_t x = 0; x < 2; ++x)
+	{
+		AddButtonLabel(static_cast<int>(Action::kMoveLeft), x, 0, "Move Left", context);
+		AddButtonLabel(static_cast<int>(Action::kMoveRight), x, 1, "Move Right", context);
+		AddButtonLabel(static_cast<int>(Action::kMoveUp), x, 2, "Move Up", context);
+		AddButtonLabel(static_cast<int>(Action::kMoveDown), x, 3, "Move Down", context);
+		AddButtonLabel(static_cast<int>(Action::kBulletFire), x, 4, "Fire", context);
+		AddButtonLabel(static_cast<int>(Action::kMissileFire), x, 5, "Missile", context);
+	}
 
 	UpdateLabels();
 
 	auto back_button = std::make_shared<gui::Button>(context);
-	back_button->setPosition(80.f, 475.f);
+	back_button->setPosition(80.f, 620.f);
 	back_button->SetText("Back");
 	back_button->SetCallback(std::bind(&SettingsState::RequestStackPop, this));
 	m_gui_container.Pack(back_button);
-
-
-
 }
 
 void SettingsState::Draw()
 {
 	sf::RenderWindow& window = *GetContext().window;
 	window.draw(m_background_sprite);
-	window.draw(m_settings_header);// for the title above buttons 
 	window.draw(m_gui_container);
-	
 }
 
 bool SettingsState::Update(sf::Time dt)
@@ -63,14 +46,21 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 	bool is_key_binding = false;
 
 	//Iterate through all of the key binding buttons to see if they are being presssed, waiting for the user to enter a key
-	for (std::size_t action = 0; action < static_cast<int>(Action::kActionCount); ++action)
+	for (std::size_t action = 0; action < 2 * (static_cast<int>(Action::kActionCount)); ++action)
 	{
 		if (m_binding_buttons[action]->IsActive())
 		{
 			is_key_binding = true;
 			if (event.type == sf::Event::KeyReleased)
 			{
-				GetContext().player->AssignKey(static_cast<Action>(action), event.key.code);
+				// Player 1
+				if (action < static_cast<int>(Action::kActionCount))
+					GetContext().keys1->AssignKey(static_cast<Action>(action), event.key.code);
+
+				// Player 2
+				else
+					GetContext().keys2->AssignKey(static_cast<Action>(action - static_cast<int>(Action::kActionCount)), event.key.code);
+
 				m_binding_buttons[action]->Deactivate();
 			}
 			break;
@@ -91,24 +81,33 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 
 void SettingsState::UpdateLabels()
 {
-	Player& player = *GetContext().player;
 	for (std::size_t i = 0; i < static_cast<int>(Action::kActionCount); ++i)
 	{
-		sf::Keyboard::Key key = player.GetAssignedKey(static_cast<Action>(i));
-		m_binding_labels[i]->SetText(Utility::toString(key));
+		auto action = static_cast<Action>(i);
+
+		// Get keys of both players
+		sf::Keyboard::Key key1 = GetContext().keys1->GetAssignedKey(action);
+		sf::Keyboard::Key key2 = GetContext().keys2->GetAssignedKey(action);
+
+		// Assign both key strings to labels
+		m_binding_labels[i]->SetText(Utility::toString(key1));
+		m_binding_labels[i + static_cast<int>(Action::kActionCount)]->SetText(Utility::toString(key2));
 	}
 }
-//ET:adding an x float to change x position
-void SettingsState::AddButtonLabel(Action action, float x, float y, const std::string& text, Context context)
+
+void SettingsState::AddButtonLabel(std::size_t index, std::size_t x, std::size_t y, const std::string& text, Context context)
 {
-	m_binding_buttons[static_cast<int>(action)] = std::make_shared<gui::Button>(context);
-	m_binding_buttons[static_cast<int>(action)]->setPosition(x, y);// changed here
-	m_binding_buttons[static_cast<int>(action)]->SetText(text);
-	m_binding_buttons[static_cast<int>(action)]->SetToggle(true);
+	// For x==0, start at index 0, otherwise start at half of array
+	index += static_cast<int>(Action::kActionCount) * x;
 
-	m_binding_labels[static_cast<int>(action)] = std::make_shared<gui::Label>("", *context.fonts);
-	m_binding_labels[static_cast<int>(action)]->setPosition(x + 300.f, y + 15.f);// chnaged here
+	m_binding_buttons[index] = std::make_shared<gui::Button>(context);
+	m_binding_buttons[index]->setPosition(400.f * x + 80.f, 50.f * y + 300.f);
+	m_binding_buttons[index]->SetText(text);
+	m_binding_buttons[index]->SetToggle(true);
 
-	m_gui_container.Pack(m_binding_buttons[static_cast<int>(action)]);
-	m_gui_container.Pack(m_binding_labels[static_cast<int>(action)]);
+	m_binding_labels[index] = std::make_shared<gui::Label>("", *context.fonts);
+	m_binding_labels[index]->setPosition(400.f * x + 300.f, 50.f * y + 315.f);
+
+	m_gui_container.Pack(m_binding_buttons[index]);
+	m_gui_container.Pack(m_binding_labels[index]);
 }

@@ -20,14 +20,27 @@
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& target, FontHolder& font, SoundPlayer& sounds);
+	explicit World(sf::RenderTarget& target, FontHolder& font, SoundPlayer& sounds, bool networked = false);
 	void Update(sf::Time dt);
 	void Draw();
 
+	sf::FloatRect GetViewBounds() const;
 	CommandQueue& GetCommandQueue();
+
+
+	Character* AddCharacter(int identifier);
+	void RemoveCharacter(int identifier);
+	void SetCurrentBattleFieldPosition(float line_y);
+	void SetWorldHeight(float height);
 
 	bool HasAlivePlayer() const;
 	bool HasPlayerReachedEnd() const;
+
+	void SetWorldScrollCompensation(float compensation);
+	Character* GetCharacter(int identifier) const;
+	sf::FloatRect GetBattleFieldBounds() const;
+	//void CreatePickup(sf::Vector2f position, PickupType type);
+	bool PollGameAction(GameActions::Action& out);
 
 private:
 	void LoadTextures();
@@ -38,8 +51,8 @@ private:
 	void SpawnEnemies();
 	void AddEnemies();
 	void AddEnemy(CharacterType type, float relx, float rely);
-	sf::FloatRect GetViewBounds() const;
-	sf::FloatRect GetBattleFieldBounds() const;
+	//sf::FloatRect GetViewBounds() const;
+	//sf::FloatRect GetBattleFieldBounds() const;
 
 	void DestroyEntitiesOutsideView();
 	void GuideMissiles();
@@ -74,13 +87,18 @@ private:
 	sf::Vector2f m_spawn_position;
 	sf::Vector2f m_spawn_position2;
 	float m_scrollspeed;
-	Character* m_player_aircraft;
-	Character* m_player2_aircraft;//ET: player 2 
+	float m_scrollspeed_compensation;
+
+	std::vector<Character*> m_player_aircraft;
+	//Character* m_player2_aircraft;//ET: player 2 
 	CommandQueue m_command_queue;
 
 	std::vector<SpawnPoint> m_enemy_spawn_points;
 	std::vector<Character*> m_active_enemies;
 
 	BloomEffect m_bloom_effect;
+	bool m_networked_world;
+	NetworkNode* m_network_node;
+	SpriteNode* m_finish_sprite;
 };
 

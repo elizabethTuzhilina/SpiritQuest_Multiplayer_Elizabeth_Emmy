@@ -8,6 +8,8 @@
 #include "MusicPlayer.hpp"
 #include "SoundPlayer.hpp"
 
+class KeyBinding;
+
 namespace sf
 {
 	class RenderWindow;
@@ -15,6 +17,7 @@ namespace sf
 
 class Player;
 class StateStack;
+class KeyBinding;
 
 class State
 {
@@ -23,7 +26,7 @@ public:
 
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, Player& player2, MusicPlayer& music, SoundPlayer& sounds);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, MusicPlayer& music, SoundPlayer& sounds, KeyBinding& keys1, KeyBinding& keys2);
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
@@ -31,6 +34,9 @@ public:
 		Player* player2;
 		MusicPlayer* music;
 		SoundPlayer* sounds;
+
+		KeyBinding* keys1;
+		KeyBinding* keys2;
 	};
 
 public:
@@ -39,6 +45,8 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Update(sf::Time dt) = 0;
 	virtual bool HandleEvent(const sf::Event& event) = 0;
+	virtual void OnActivate();
+	virtual void OnDestroy();
 
 
 protected:

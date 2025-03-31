@@ -3,12 +3,11 @@
 #include "ResourceHolder.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "Utility.hpp"
+#include "Button.hpp"
 
-PauseState::PauseState(StateStack& stack, Context context)
+PauseState::PauseState(StateStack& stack, Context context, bool lets_updates_through)
     :State(stack, context)
-    , m_background_sprite()
-    , m_paused_text()
-    , m_instruction_text()
+    , m_lets_updates_through(lets_updates_through)
 {
     sf::Font& font = context.fonts->Get(Font::kMain);
     sf::Vector2f view_size = context.window->getView().getSize();

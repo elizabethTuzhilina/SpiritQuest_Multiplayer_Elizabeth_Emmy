@@ -10,6 +10,8 @@
 #include "Pickup.hpp"
 #include "SoundNode.hpp"
 
+#include "NetworkNode.hpp"
+
 //E.I, Changed ALL "aircrafttype" & "aircraft" references to "character" & "charactertype"
 namespace
 {
@@ -50,6 +52,7 @@ Character::Character(CharacterType type, const TextureHolder& textures, const Fo
 	, m_show_explosion(true)
 	, m_spawned_pickup(false)
 	, m_played_explosion_sound(false)
+	, m_identifier(0)
 	
 
 {
@@ -94,6 +97,16 @@ Character::Character(CharacterType type, const TextureHolder& textures, const Fo
 	UpdateTexts();
 }
 
+int	Character::GetIdentifier()
+{
+	return m_identifier;
+}
+
+void Character::SetIdentifier(int identifier)
+{
+	m_identifier = identifier;
+}
+
 //E.T
 unsigned int Character::GetCategory() const
 {
@@ -131,7 +144,14 @@ void Character::CollectMissile(unsigned int count)
 //E.I
 void Character::UpdateTexts()
 {
-	m_spirit_energy_display->SetString(std::to_string(GetHitPoints()) + "SE");
+	if (IsDestroyed())
+	{
+		m_spirit_energy_display->SetString("");
+	}
+	else
+	{
+		m_spirit_energy_display->SetString(std::to_string(GetHitPoints()) + "Spirit.E");
+	}
 	m_spirit_energy_display->setPosition(0.f, 50.f);
 	m_spirit_energy_display->setRotation(-getRotation());
 
@@ -279,6 +299,8 @@ void Character::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	//Check if bullets or misiles are fired
 	CheckProjectileLaunch(dt, commands);
 }
+
+
 
 void Character::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 {
