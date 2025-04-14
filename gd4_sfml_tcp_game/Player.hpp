@@ -33,6 +33,7 @@ public:
 
 	void DisableAllRealtimeActions();
 	bool IsLocal() const;
+	bool IsRealTimeAction(Action action);
 
 private:
 	void InitialiseActions();

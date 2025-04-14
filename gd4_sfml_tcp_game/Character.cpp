@@ -9,6 +9,7 @@
 #include "PickupType.hpp"
 #include "Pickup.hpp"
 #include "SoundNode.hpp"
+#include "BulletDirection.hpp"
 
 #include "NetworkNode.hpp"
 
@@ -199,13 +200,52 @@ float Character::GetMaxSpeed() const
 	return Table[static_cast<int>(m_type)].m_speed;
 }
 
-void Character::Fire()
+BulletDirection Character::GetBulletDirection() const
+{
+	return b_current_direction;
+}
+
+void Character::FireUp()
 {
 	if (Table[static_cast<int>(m_type)].m_fire_interval != sf::Time::Zero)
 	{
 		m_is_firing = true;
+		b_is_up = true;
+		UpdateBulletDirection();
 	}
 }
+
+void Character::FireDown()
+{
+	if (Table[static_cast<int>(m_type)].m_fire_interval != sf::Time::Zero)
+	{
+		m_is_firing = true;
+		b_is_down = true;
+		UpdateBulletDirection();
+	}
+}
+
+void Character::FireLeft()
+{
+	if (Table[static_cast<int>(m_type)].m_fire_interval != sf::Time::Zero)
+	{
+		m_is_firing = true;
+		b_is_left = true;
+		UpdateBulletDirection();
+	}
+}
+
+void Character::FireRight()
+{
+	if (Table[static_cast<int>(m_type)].m_fire_interval != sf::Time::Zero)
+	{
+		m_is_firing = true;
+		b_is_right = true;
+		UpdateBulletDirection();
+	}
+}
+
+
 
 
 void Character::LaunchMissile()
@@ -243,10 +283,30 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().width, y_offset * m_sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
+	
 
-	float sign = IsAllied() ? -1.f : 1.f;
-	projectile->setPosition(GetWorldPosition() + offset * sign);
-	projectile->SetVelocity(velocity* sign);
+	switch (GetBulletDirection())
+	{
+	case BulletDirection::kUp:
+		velocity.y = -projectile->GetMaxSpeed();
+		y_offset;
+		break;
+	case BulletDirection::kDown:
+		velocity.y = projectile->GetMaxSpeed();
+		y_offset;
+		break;
+	case BulletDirection::kLeft:
+		velocity.x = -projectile->GetMaxSpeed();
+		y_offset;
+		break;
+	case BulletDirection::kRight:
+		velocity.x = projectile->GetMaxSpeed();
+		y_offset;
+		break;
+	}
+
+	projectile->setPosition(GetWorldPosition() + offset);
+	projectile->SetVelocity(velocity);
 	node.AttachChild(std::move(projectile));
 }
 
@@ -393,6 +453,30 @@ void Character::UpdateRollAnimation()
 		m_sprite.setTextureRect(textureRect);
 		
 
+	}
+}
+
+void Character::UpdateBulletDirection()
+{
+	if (b_is_up)
+	{
+		b_current_direction = BulletDirection::kUp;
+		b_is_up = false;
+	}
+	else if (b_is_down)
+	{
+		b_current_direction = BulletDirection::kDown;
+		b_is_down = false;
+	}
+	else if (b_is_left)
+	{
+		b_current_direction = BulletDirection::kLeft;
+		b_is_left = false;
+	}
+	else if (b_is_right)
+	{
+		b_current_direction = BulletDirection::kRight;
+		b_is_right = false;
 	}
 }
 

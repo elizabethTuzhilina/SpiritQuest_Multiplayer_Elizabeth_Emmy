@@ -5,12 +5,14 @@
 #include "Character.hpp"
 #include "NetworkProtocol.hpp"
 #include <SFML/Network/Packet.hpp>
+#include "BulletDirection.hpp"
 
 #include <map>
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <iostream>
+
 
 /*ET mostly for multiplayer programming*/
 struct CharacterMover
@@ -36,24 +38,46 @@ struct CharacterMover
 //E.T
 struct CharacterFireTrigger
 {
-
+    //BulletDirection dir;
   //  const bool isGhost = (id == ID::Player1);
 
     // PLAYER 1(Ghost) Controls (WASD +Space/M)
    // if (isGhost) {
         //Set initial key bindings
-    CharacterFireTrigger(int identifier)
-       : character_id(identifier)
+    CharacterFireTrigger(BulletDirection dir, int identifier)
+       : direction(dir), character_id(identifier)
     {
     }
 
     void operator() (Character& character, sf::Time) const
     {
+        
         if (character.GetIdentifier() == character_id)
-            character.Fire();
+        {
+            switch (direction)
+            {
+            case BulletDirection::kLeft:
+                character.FireLeft();
+                break;
+            case BulletDirection::kRight:
+                character.FireRight();
+                break;
+            case BulletDirection::kUp:
+                character.FireUp();
+                break;
+            case BulletDirection::kDown:
+                character.FireDown();
+                break;
+            default:
+                break;
+            }
+        }
+            
     }
 
     int character_id;
+    BulletDirection direction;
+    
 };
 
 /*struct CharacterMissileTrigger
@@ -211,6 +235,23 @@ void Player::InitialiseActions()
     m_action_binding[Action::kMoveRight].action = DerivedAction<Character>(CharacterMover(+1, 0.f, m_identifier));
     m_action_binding[Action::kMoveUp].action = DerivedAction<Character>(CharacterMover(0.f, -1, m_identifier));
     m_action_binding[Action::kMoveDown].action = DerivedAction<Character>(CharacterMover(0.f, 1, m_identifier));
-    m_action_binding[Action::kBulletFire].action = DerivedAction<Character>(CharacterFireTrigger(m_identifier));
+    m_action_binding[Action::kBulletFireUp].action = DerivedAction<Character>(CharacterFireTrigger(BulletDirection::kUp, m_identifier));
+    m_action_binding[Action::kBulletFireDown].action = DerivedAction<Character>(CharacterFireTrigger(BulletDirection::kDown, m_identifier));
+    m_action_binding[Action::kBulletFireLeft].action = DerivedAction<Character>(CharacterFireTrigger(BulletDirection::kLeft, m_identifier));
+    m_action_binding[Action::kBulletFireRight].action = DerivedAction<Character>(CharacterFireTrigger(BulletDirection::kRight, m_identifier));
    // m_action_binding[Action::kMissileFire].action = DerivedAction<Character>(CharacterMissileTrigger(m_identifier));
+}
+
+bool Player::IsRealTimeAction(Action action)
+{
+    switch (action)
+    {
+    case Action::kBulletFireLeft:
+    case Action::kBulletFireRight:
+    case Action::kBulletFireDown:
+    case Action::kBulletFireUp:
+        return true;
+    default:
+        return false;
+    }
 }

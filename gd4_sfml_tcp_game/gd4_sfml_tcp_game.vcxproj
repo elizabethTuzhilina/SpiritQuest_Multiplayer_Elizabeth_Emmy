@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Action.hpp" />
+    <ClInclude Include="BulletDirection.hpp" />
     <ClInclude Include="Character.hpp" />
     <ClInclude Include="CharacterType.hpp" />
     <ClInclude Include="Animation.hpp" />

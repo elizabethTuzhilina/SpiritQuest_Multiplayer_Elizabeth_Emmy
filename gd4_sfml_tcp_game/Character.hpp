@@ -8,6 +8,7 @@
 #include "ProjectileType.hpp"
 #include <SFML/Graphics/Sprite.hpp>
 #include "Animation.hpp"
+#include "BulletDirection.hpp"
 
 class Character : public Entity
 {
@@ -28,7 +29,11 @@ public:
 	void UpdateMovementPattern(sf::Time dt);
 
 	float GetMaxSpeed() const;
-	void Fire();
+	BulletDirection GetBulletDirection() const;
+	void FireUp();
+	void FireDown();
+	void FireLeft();
+	void FireRight();
 	void LaunchMissile();
 	void CreateBullet(SceneNode& node, const TextureHolder& textures) const;
 	void CreateProjectile(SceneNode& node, ProjectileType type, float x_float, float y_offset, const TextureHolder& textures) const;
@@ -46,6 +51,8 @@ private:
 	void CreatePickup(SceneNode& node, const TextureHolder& textures) const;
 	void CheckPickupDrop(CommandQueue& commands);
 	void UpdateRollAnimation();
+
+	void UpdateBulletDirection();
 
 private:
 	CharacterType m_type;
@@ -66,6 +73,14 @@ private:
 	unsigned int m_missile_ammo;
 
 	bool m_is_firing;
+
+	bool b_is_up;
+	bool b_is_down;
+	bool b_is_left;
+	bool b_is_right;
+
+	BulletDirection b_current_direction;
+
 	bool m_is_launching_missile;
 	sf::Time m_fire_countdown;
 

@@ -338,6 +338,9 @@
     <ClInclude Include="KeyBinding.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BulletDirection.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceHolder.inl">

@@ -7,7 +7,10 @@ enum class Action
 	kMoveUp,
 	kMoveDown,
 	kMissileFire,
-	kBulletFire,
+	kBulletFireUp,
+	kBulletFireDown,
+	kBulletFireLeft,
+	kBulletFireRight,
 
 	//ET: movement contols for second player 
 	kMoveLeftP2,
