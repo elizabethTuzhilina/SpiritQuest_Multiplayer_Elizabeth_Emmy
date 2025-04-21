@@ -6,8 +6,8 @@ enum class ReceiverCategories
 	kScene = 1 << 0,
 	kPlayer1 = 1 << 1,
 	kPlayer2 = 1 << 9,
-	kAlliedAircraft = 1 << 2,
-	kEnemyAircraft = 1 << 3,
+	kGhostR = 1 << 2,
+	kReaperR = 1 << 3,
 
 	kAlliedProjectile = 1 << 4,
 	kEnemyProjectile = 1 << 5,
@@ -17,7 +17,7 @@ enum class ReceiverCategories
 	kSoundEffect = 1 << 8,
 	kNetwork = 1 << 9,
 
-	kAircraft = kPlayer1 | kAlliedAircraft | kPlayer2 | kEnemyAircraft,
+	kAircraft = kPlayer1 | kGhostR | kReaperR,
 	kProjectile = kAlliedProjectile | kEnemyProjectile
 };
 

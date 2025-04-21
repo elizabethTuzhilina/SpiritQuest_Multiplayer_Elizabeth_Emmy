@@ -111,13 +111,17 @@ void Character::SetIdentifier(int identifier)
 //E.T
 unsigned int Character::GetCategory() const
 {
-	if (IsAllied())
+	if (IsGhost()||IsReaper()==false)
 	{
-		return static_cast<unsigned int>(ReceiverCategories::kPlayer1);
-		return static_cast<unsigned int>(ReceiverCategories::kPlayer2);
+		return static_cast<unsigned int>(ReceiverCategories::kGhostR);
+
+		
 	}
-	//return static_cast<unsigned int>(ReceiverCategories::kEnemyAircraft);
-	return static_cast<unsigned int>(ReceiverCategories::kPlayer2);
+	if (IsReaper()||IsGhost()==false)
+	{
+		return static_cast<unsigned int>(ReceiverCategories::kReaperR);
+
+	}
 
 }
 
@@ -259,7 +263,7 @@ void Character::LaunchMissile()
 
 void Character::CreateBullet(SceneNode& node, const TextureHolder& textures) const
 {
-	ProjectileType type = IsAllied() ? ProjectileType::kAlliedBullet : ProjectileType::kEnemyBullet;
+	ProjectileType type = IsGhost() ? ProjectileType::kGhostBullet : ProjectileType::kReaperBullet;
 	switch (m_spread_level)
 	{
 	case 1:
@@ -371,7 +375,7 @@ void Character::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 
 	if (m_is_firing && m_fire_countdown <= sf::Time::Zero)
 	{
-		PlayLocalSound(commands, IsAllied() ? SoundEffect::kEnemyGunfire : SoundEffect::kAlliedGunfire);
+		PlayLocalSound(commands, IsGhost() ? SoundEffect::kEnemyGunfire : SoundEffect::kAlliedGunfire);
 		commands.Push(m_fire_command);
 		m_fire_countdown += Table[static_cast<int>(m_type)].m_fire_interval / (m_fire_rate + 1.f);
 		m_is_firing = false;
@@ -392,9 +396,14 @@ void Character::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	}
 }
 
-bool Character::IsAllied() const
+bool Character::IsGhost() const
 {
 	return m_type == CharacterType::kGhost;
+}
+
+bool Character::IsReaper() const
+{
+	return m_type == CharacterType::kReaper;
 }
 
 void Character::CreatePickup(SceneNode& node, const TextureHolder& textures) const
@@ -409,7 +418,7 @@ void Character::CreatePickup(SceneNode& node, const TextureHolder& textures) con
 void Character::CheckPickupDrop(CommandQueue& commands)
 {
 	//TODO Get rid of the magic number 3 here 
-	if (!IsAllied() && Utility::RandomInt(3) == 0 && !m_spawned_pickup)
+	if (!IsGhost() && Utility::RandomInt(3) == 0 && !m_spawned_pickup)
 	{
 		commands.Push(m_drop_pickup_command);
 	}

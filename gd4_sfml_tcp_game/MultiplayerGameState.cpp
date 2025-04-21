@@ -363,10 +363,11 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	{
 		sf::Int32 aircraft_identifier;
 		sf::Vector2f aircraft_position;
+		bool aircraft_type;
 		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
 		Character* character = m_world.AddCharacter(aircraft_identifier);
 		character->setPosition(aircraft_position);
-		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, GetContext().keys1));
+		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, GetContext().keys1, aircraft_type));
 		m_local_player_identifiers.push_back(aircraft_identifier);
 		m_game_started = true;
 	}
@@ -376,11 +377,12 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	{
 		sf::Int32 aircraft_identifier;
 		sf::Vector2f aircraft_position;
-		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
+		bool aircraft_type;
+		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y >> aircraft_type;
 
 		Character* character = m_world.AddCharacter(aircraft_identifier);
 		character->setPosition(aircraft_position);
-		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, nullptr));
+		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, nullptr, aircraft_type));
 	}
 	break;
 
@@ -408,15 +410,16 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Int32 character_identifier;
 			sf::Int32 hitpoints;
 			sf::Int32 missile_ammo;
+			bool character_type;
 			sf::Vector2f character_position;
-			packet >> character_identifier >> character_position.x >> character_position.y >> hitpoints >> missile_ammo;
+			packet >> character_identifier >> character_position.x >> character_position.y >> hitpoints >> missile_ammo >> character_type;
 
 			Character* character = m_world.AddCharacter(character_identifier);
 			character->setPosition(character_position);
 			character->SetHitpoints(hitpoints);
 			//character->SetMissileAmmo(missile_ammo);
 
-			m_players[character_identifier].reset(new Player(&m_socket, character_identifier, nullptr));
+			m_players[character_identifier].reset(new Player(&m_socket, character_identifier, nullptr, character_type));
 		}
 	}
 	break;
@@ -424,10 +427,11 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	case Server::PacketType::kAcceptCoopPartner:
 	{
 		sf::Int32 character_identifier;
+		bool character_type;
 		packet >> character_identifier;
 
 		m_world.AddCharacter(character_identifier);
-		m_players[character_identifier].reset(new Player(&m_socket, character_identifier, GetContext().keys2));
+		m_players[character_identifier].reset(new Player(&m_socket, character_identifier, GetContext().keys2, character_type));
 		m_local_player_identifiers.emplace_back(character_identifier);
 	}
 	break;

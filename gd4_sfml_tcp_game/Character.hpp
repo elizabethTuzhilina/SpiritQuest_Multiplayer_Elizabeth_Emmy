@@ -38,6 +38,9 @@ public:
 	void CreateBullet(SceneNode& node, const TextureHolder& textures) const;
 	void CreateProjectile(SceneNode& node, ProjectileType type, float x_float, float y_offset, const TextureHolder& textures) const;
 
+	bool IsGhost() const;
+	bool IsReaper() const;
+
 	sf::FloatRect GetBoundingRect() const override;
 	bool IsMarkedForRemoval() const override;
 	//void Remove() ;
@@ -47,7 +50,7 @@ private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 	void CheckProjectileLaunch(sf::Time dt, CommandQueue& commands);
-	bool IsAllied() const;
+	
 	void CreatePickup(SceneNode& node, const TextureHolder& textures) const;
 	void CheckPickupDrop(CommandQueue& commands);
 	void UpdateRollAnimation();

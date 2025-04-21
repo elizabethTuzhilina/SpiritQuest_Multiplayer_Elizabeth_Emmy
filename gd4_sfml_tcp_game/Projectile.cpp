@@ -42,7 +42,7 @@ bool Projectile::IsGuided() const
 
 unsigned int Projectile::GetCategory() const
 {
-    if (m_type == ProjectileType::kEnemyBullet)
+    if (m_type == ProjectileType::kReaperBullet)
     {
         return static_cast<int>(ReceiverCategories::kEnemyProjectile);
     }

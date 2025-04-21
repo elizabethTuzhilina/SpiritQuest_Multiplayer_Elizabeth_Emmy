@@ -265,7 +265,7 @@ void World::BuildScene()
 	std::unique_ptr<SpriteNode> plat1A_sprite(new SpriteNode(plat1A_texture));
 	plat1A_sprite->setPosition(0.f, 2200.f);
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat1A_sprite));
-	//B
+	//1B
 	sf::Texture& plat1B_texture = m_textures.Get(TextureID::kPlat1B);
 	std::unique_ptr<SpriteNode> plat1B_sprite(new SpriteNode(plat1B_texture));
 	plat1B_sprite->setPosition(600.f, 2200.f);
@@ -315,7 +315,7 @@ void World::BuildScene()
 	//Add the finish line
 	sf::Texture& finish_texture = m_textures.Get(TextureID::kFinishLine);
 	std::unique_ptr<SpriteNode> finish_sprite(new SpriteNode(finish_texture));
-	finish_sprite->setPosition(0.f, -76.f);
+	finish_sprite->setPosition(0.f, -1000.f);
 	m_finish_sprite = finish_sprite.get();
 	m_scene_layers[static_cast<int>(SceneLayers::kBackground)]->AttachChild(std::move(finish_sprite));
 
@@ -459,7 +459,7 @@ sf::FloatRect World::GetBattleFieldBounds() const
 void World::DestroyEntitiesOutsideView()
 {
 	Command command;
-	command.category = static_cast<int>(ReceiverCategories::kPlayer1) | static_cast<int>(ReceiverCategories::kProjectile) | static_cast<int>(ReceiverCategories::kPlayer2);//ET, same constrainst for player 2
+	command.category = static_cast<int>(ReceiverCategories::kGhostR) | static_cast<int>(ReceiverCategories::kProjectile) | static_cast<int>(ReceiverCategories::kReaperR);//ET, same constrainst for player 2
 	command.action = DerivedAction<Entity>([this](Entity& e, sf::Time dt)
 		{
 			//Does the object intersect with the battlefield
@@ -479,7 +479,7 @@ void World::GuideMissiles()
 {
 	//Target the closest enemy in the world
 	Command enemyCollector;
-	enemyCollector.category = static_cast<int>(ReceiverCategories::kEnemyAircraft);
+	enemyCollector.category = static_cast<int>(ReceiverCategories::kReaperR);
 	enemyCollector.action = DerivedAction<Character>([this](Character& enemy, sf::Time)
 		{
 			if (!enemy.IsDestroyed())
@@ -547,22 +547,23 @@ void World::HandleCollisions()
 	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
 	for (SceneNode::Pair pair : collision_pairs)
 	{
-		if (MatchesCategories(pair, ReceiverCategories::kPlayer1, ReceiverCategories::kEnemyAircraft))
+		if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kReaperR))
 		{
-			auto& player = static_cast<Character&>(*pair.first);
-			auto& enemy = static_cast<Character&>(*pair.second);
+			auto& ghost = static_cast<Character&>(*pair.first);
+			auto& reaper = static_cast<Character&>(*pair.second);
 			//Collision response
-			player.Damage(10);
+			ghost.Damage(10);
 			//enemy.Destroy();
 		}
 
 		//ET: destroy player if player 2 collides with it 
-		else if (MatchesCategories(pair, ReceiverCategories::kPlayer1, ReceiverCategories::kPlayer2))
+		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kReaperR))
 		{
-			auto& player = static_cast<Character&>(*pair.first);
-			auto& enemy = static_cast<Character&>(*pair.second);
+			auto& ghost = static_cast<Character&>(*pair.first);
+			auto& reaper = static_cast<Character&>(*pair.second);
 			//Collision response
-			player .Destroy();
+			ghost.Destroy();
+			reaper.Damage(5);
 		}
 		else if (MatchesCategories(pair, ReceiverCategories::kPlayer1, ReceiverCategories::kPickup))
 		{
@@ -573,7 +574,7 @@ void World::HandleCollisions()
 			pickup.Destroy();
 			player.PlayLocalSound(m_command_queue, SoundEffect::kCollectPickup);
 		}
-		else if (MatchesCategories(pair, ReceiverCategories::kPlayer1, ReceiverCategories::kEnemyProjectile) || MatchesCategories(pair, ReceiverCategories::kPlayer2, ReceiverCategories::kAlliedProjectile))
+		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kEnemyProjectile) || MatchesCategories(pair, ReceiverCategories::kReaperR, ReceiverCategories::kAlliedProjectile))
 		{
 			auto& aircraft = static_cast<Character&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
