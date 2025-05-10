@@ -97,26 +97,24 @@ struct CharacterFireTrigger
 };
 */
 
-Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding, bool isghost) : m_key_binding(binding), m_current_mission_status(MissionStatus::kMissionRunning), m_identifier(identifier), m_socket(socket)
+Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding) : m_key_binding(binding), m_current_mission_status(MissionStatus::kMissionRunning), m_identifier(identifier), m_socket(socket)
 {
     //Set initial action bindings
     InitialiseActions();
 
     //Assign all categories to a player's aircraft
-    if (isghost==true)
-    {
+    
         for (auto& pair : m_action_binding)
         {
             pair.second.category = static_cast<unsigned int>(ReceiverCategories::kGhostR);
         }
-    }
-    else if (isghost == false)
-    {
-        for (auto& pair : m_action_binding)
-        {
-            pair.second.category = static_cast<unsigned int>(ReceiverCategories::kReaperR);
-        }
-    }
+   
+   
+      //  for (auto& pair : m_action_binding)
+       // {
+       //     pair.second.category = static_cast<unsigned int>(ReceiverCategories::kReaperR);
+       // }
+    
     
 
 }

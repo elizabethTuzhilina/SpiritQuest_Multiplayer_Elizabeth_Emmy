@@ -19,7 +19,7 @@ class Player
 	// ET: adding constructor to handle player IDs 
 public:
 	//enum class ID{Player1, Player2};
-	Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding, bool IsGhost);
+	Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding);
 	void HandleEvent(const sf::Event& event, CommandQueue& command);
 	void HandleRealTimeInput(CommandQueue& command);
 	void HandleRealtimeNetworkInput(CommandQueue& commands);
