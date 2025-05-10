@@ -10,7 +10,7 @@
 #include "Pickup.hpp"
 #include "SoundNode.hpp"
 #include "BulletDirection.hpp"
-
+#include "SpriteNode.hpp"
 #include "NetworkNode.hpp"
 
 //E.I, Changed ALL "aircrafttype" & "aircraft" references to "character" & "charactertype"
@@ -34,7 +34,7 @@ TextureID ToTextureID(CharacterType type)
 	return TextureID::kGhost;
 }
 
-Character::Character(CharacterType type, const TextureHolder& textures, const FontHolder& fonts)  
+Character::Character(CharacterType type, const TextureHolder& textures, FontHolder& fonts, sf::FloatRect worldBounds)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
@@ -54,6 +54,7 @@ Character::Character(CharacterType type, const TextureHolder& textures, const Fo
 	, m_spawned_pickup(false)
 	, m_played_explosion_sound(false)
 	, m_identifier(0)
+	, m_world_bounds (worldBounds)
 	
 
 {
@@ -141,10 +142,6 @@ void Character::IncreaseFireSpread()
 	}
 }
 
-void Character::CollectMissile(unsigned int count)
-{
-	m_missile_ammo += count;
-}
 
 //E.I
 void Character::UpdateTexts()
@@ -252,14 +249,7 @@ void Character::FireRight()
 
 
 
-void Character::LaunchMissile()
-{
-	if (m_missile_ammo > 0)
-	{
-		m_is_launching_missile = true;
-		--m_missile_ammo;
-	}
-}
+
 
 void Character::CreateBullet(SceneNode& node, const TextureHolder& textures) const
 {
@@ -502,4 +492,50 @@ void Character::PlayLocalSound(CommandQueue& commands, SoundEffect effect)
 		});
 
 	commands.Push(command);
+}
+//ET:
+void Character::CheckPlatformCollision(const SpriteNode& platform)
+{
+	 sf::FloatRect platformBounds = platform.GetBoundingRect();
+	sf::FloatRect characterBounds = GetBoundingRect();
+
+	if (characterBounds.intersects(platformBounds))
+	{
+		// Simple resolution: bounce slightly
+		sf::Vector2f velocity = GetVelocity();
+
+		// Reflect X if hitting side
+		if (characterBounds.left < platformBounds.left ||
+			characterBounds.left + characterBounds.width > platformBounds.left + platformBounds.width)
+		{
+			velocity.x = -velocity.x * 0.5f;
+		}
+
+		// Reflect Y if hitting top/bottom
+		if (characterBounds.top < platformBounds.top ||
+			characterBounds.top + characterBounds.height > platformBounds.top + platformBounds.height)
+		{
+			velocity.y = -velocity.y * 0.5f;
+		}
+
+		SetVelocity(velocity);
+	}
+}
+//ET:
+void Character::CheckWorldBoundaryCollision()
+{
+	sf::Vector2f position = getPosition();
+	sf::FloatRect bounds = m_world_bounds;
+
+	// Wrap horizontally
+	if (position.x < bounds.left)
+		setPosition(bounds.left + bounds.width, position.y);
+	else if (position.x > bounds.left + bounds.width)
+		setPosition(bounds.left, position.y);
+
+	// Wrap vertically
+	if (position.y < bounds.top)
+		setPosition(position.x, bounds.top + bounds.height);
+	else if (position.y > bounds.top + bounds.height)
+		setPosition(position.x, bounds.top);
 }

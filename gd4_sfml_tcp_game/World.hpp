@@ -11,16 +11,20 @@
 #include "CommandQueue.hpp"
 #include "BloomEffect.hpp"
 #include "SoundPlayer.hpp"
-
 #include "NetworkNode.hpp"
 #include "NetworkProtocol.hpp"
+#include "CharacterType.hpp"
 
 #include <array>
 
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& target, FontHolder& font, SoundPlayer& sounds, bool networked = false);
+	explicit World
+	(sf::RenderTarget& target,
+		FontHolder& font,
+		SoundPlayer& sounds,
+		bool networked = false);
 	void Update(sf::Time dt);
 	void Draw();
 
@@ -39,7 +43,6 @@ public:
 	void SetWorldScrollCompensation(float compensation);
 	Character* GetCharacter(int identifier) const;
 	sf::FloatRect GetBattleFieldBounds() const;
-	//void CreatePickup(sf::Vector2f position, PickupType type);
 	bool PollGameAction(GameActions::Action& out);
 
 private:
@@ -47,31 +50,22 @@ private:
 	void BuildScene();
 	void AdaptPlayerPosition();
 	void AdaptPlayerVelocity();
-
-	void SpawnEnemies();
-	void AddEnemies();
-	void AddEnemy(CharacterType type, float relx, float rely);
-	//sf::FloatRect GetViewBounds() const;
-	//sf::FloatRect GetBattleFieldBounds() const;
-
 	void DestroyEntitiesOutsideView();
-	void GuideMissiles();
-
 	void HandleCollisions();
-	void HandleDeteriorate();
 	void UpdateSounds();
 
-
+	
 private:
+	
 	struct SpawnPoint
 	{
-		SpawnPoint(CharacterType type, float x, float y) :m_type(type), m_x(x), m_y(y)
-		{
-
-		}
 		CharacterType m_type;
 		float m_x;
 		float m_y;
+
+		SpawnPoint(CharacterType type, float x, float y)
+			: m_type(type), m_x(x), m_y(y)
+		{}
 	};
 
 private:
@@ -85,20 +79,16 @@ private:
 	std::array<SceneNode*, static_cast<int>(SceneLayers::kLayerCount)> m_scene_layers;
 	sf::FloatRect m_world_bounds;
 	sf::Vector2f m_spawn_position;
-	sf::Vector2f m_spawn_position2;
 	float m_scrollspeed;
 	float m_scrollspeed_compensation;
-
 	std::vector<Character*> m_player_aircraft;
-	//Character* m_player2_aircraft;//ET: player 2 
 	CommandQueue m_command_queue;
-
 	std::vector<SpawnPoint> m_enemy_spawn_points;
-	std::vector<Character*> m_active_enemies;
-
 	BloomEffect m_bloom_effect;
 	bool m_networked_world;
 	NetworkNode* m_network_node;
-	SpriteNode* m_finish_sprite;
+	std::unique_ptr<SpriteNode> m_finish_sprite;
+	std::vector<SpriteNode*> m_platforms;  // Store platforms for collision checks
+
 };
 
