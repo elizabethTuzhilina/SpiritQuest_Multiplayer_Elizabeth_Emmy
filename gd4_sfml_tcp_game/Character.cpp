@@ -111,13 +111,13 @@ void Character::SetIdentifier(int identifier)
 //E.T
 unsigned int Character::GetCategory() const
 {
-	if (IsGhost()||IsReaper()==false)
+	if (IsReaper()==false)
 	{
 		return static_cast<unsigned int>(ReceiverCategories::kGhostR);
 
 		
 	}
-	if (IsReaper()||IsGhost()==false)
+	if (IsGhost()==false)
 	{
 		return static_cast<unsigned int>(ReceiverCategories::kReaperR);
 

@@ -101,8 +101,10 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 {
     //Set initial action bindings
     InitialiseActions();
-
+   // character.IsGhost();
     //Assign all categories to a player's aircraft
+
+    
     
         for (auto& pair : m_action_binding)
         {
@@ -110,10 +112,11 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
         }
    
    
-      //  for (auto& pair : m_action_binding)
-       // {
-       //     pair.second.category = static_cast<unsigned int>(ReceiverCategories::kReaperR);
-       // }
+      /*  for (auto& pair : m_action_binding)
+        {
+            pair.second.category = static_cast<unsigned int>(ReceiverCategories::kReaperR);
+        }
+        */
     
     
 
