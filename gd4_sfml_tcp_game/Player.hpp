@@ -6,7 +6,6 @@
 #include "MissionStatus.hpp"
 
 #include "KeyBinding.hpp"
-#include "CommandQueue.hpp"
 #include <SFML/Network/TcpSocket.hpp>
 
 #include <map>

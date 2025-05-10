@@ -37,14 +37,20 @@ std::vector<CharacterData> InitializeCharacterData()
     return data;
 }
 
-
+//ET: Fix 
 //E.I Attempted projectile spawner
 std::vector<ProjectileSpawnerData> InitializeProjectileSpawnerData()
 {
-    std::vector<ProjectileSpawnerData> spawnerdata;
+    std::vector<ProjectileSpawnerData> spawnerdata(1);
+    spawnerdata[0].m_fire_interval = sf::seconds(1);
+    spawnerdata[0].m_texture = TextureID::kSpawner;
 
-    spawnerdata[static_cast<int>(1)].m_fire_interval = sf::seconds(1);
-    spawnerdata[static_cast<int>(1)].m_texture = TextureID::kSpawner;
+   // std::vector<ProjectileSpawnerData> spawnerdata;
+   // std::vector<ProjectileSpawnerData> spawnerdata(1);  // or size to kCount if you have an enum
+   // spawnerdata[0].m_fire_interval = sf::seconds(1);
+
+   // spawnerdata[static_cast<int>(1)].m_fire_interval = sf::seconds(1);
+   // spawnerdata[static_cast<int>(1)].m_texture = TextureID::kSpawner;
     return spawnerdata;
 }
 
@@ -83,9 +89,6 @@ std::vector<PickupData> InitializePickupData()
 
     data[static_cast<int>(PickupType::kMissileRefill)].m_texture = TextureID::kEntities;
     data[static_cast<int>(PickupType::kMissileRefill)].m_texture_rect = sf::IntRect(40, 64, 40, 40);
-    
-    data[static_cast<int>(PickupType::kMissileRefill)].m_action = std::bind(&Character::CollectMissile, std::placeholders::_1, 3);
-
     data[static_cast<int>(PickupType::kFireSpread)].m_texture = TextureID::kEntities;
     data[static_cast<int>(PickupType::kFireSpread)].m_texture_rect = sf::IntRect(80, 64, 40, 40);
     data[static_cast<int>(PickupType::kFireSpread)].m_action = std::bind(&Character::IncreaseFireSpread, std::placeholders::_1);
@@ -109,20 +112,3 @@ std::vector<ParticleData> InitializeParticleData()
 
     return data;
 }
-
-
-//E.I Attempted Deteriorate Mechanic
-
-/*std::vector<DeteriorateData> InitializeDeteriorateData()
-{
-    std::vector<DeteriorateData> data;
-    
-    DeteriorateData deteriorateData;
-    deteriorateData.m_damage = 5; 
-
-    
-    data.push_back(deteriorateData);
-
-    return data;
-}
-*/

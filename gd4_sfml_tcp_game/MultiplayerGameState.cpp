@@ -363,7 +363,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	{
 		sf::Int32 aircraft_identifier;
 		sf::Vector2f aircraft_position;
-		bool aircraft_type;
+		
 		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
 		Character* character = m_world.AddCharacter(aircraft_identifier);
 		character->setPosition(aircraft_position);
@@ -377,7 +377,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	{
 		sf::Int32 aircraft_identifier;
 		sf::Vector2f aircraft_position;
-		bool aircraft_type;
+		
 		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
 
 		Character* character = m_world.AddCharacter(aircraft_identifier);
@@ -427,7 +427,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	case Server::PacketType::kAcceptCoopPartner:
 	{
 		sf::Int32 character_identifier;
-		bool character_type;
+		
 		packet >> character_identifier;
 
 		m_world.AddCharacter(character_identifier);
