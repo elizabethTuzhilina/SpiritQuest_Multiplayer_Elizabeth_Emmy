@@ -1,5 +1,6 @@
 ## Description
 *Spirit Quest* is a multiplayer game developed using SFML in Visual Studio. Players take on the roles of a ghost and as a reaper
+
 ## Assets & Sources
 
 ### Textures
