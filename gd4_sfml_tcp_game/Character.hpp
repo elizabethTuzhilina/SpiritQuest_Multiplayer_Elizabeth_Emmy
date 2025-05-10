@@ -11,7 +11,7 @@
 #include "BulletDirection.hpp"
 #include "SceneNode.hpp"
 #include "SpriteNode.hpp"
-#include "World.hpp"
+
 
 class Character : public Entity
 {
