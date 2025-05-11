@@ -269,59 +269,89 @@ void World::BuildScene()
 	sf::Texture& plat1A_texture = m_textures.Get(TextureID::kPlat1A);
 	std::unique_ptr<SpriteNode> plat1A_sprite(new SpriteNode(plat1A_texture));
 	plat1A_sprite->setPosition(0.f, 2200.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat1A_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat1A_sprite));
+	
 	//1B
 	sf::Texture& plat1B_texture = m_textures.Get(TextureID::kPlat1B);
 	std::unique_ptr<SpriteNode> plat1B_sprite(new SpriteNode(plat1B_texture));
 	plat1B_sprite->setPosition(600.f, 2200.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat1B_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat1B_sprite));
-
+	
 	//Plat2, A
 	sf::Texture& plat2a_texture = m_textures.Get(TextureID::kPlat2A);
 	std::unique_ptr<SpriteNode> plat2a_sprite(new SpriteNode(plat2a_texture));
 	plat2a_sprite->setPosition(300.f, 2000.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2a_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2a_sprite));
+	
 	//2B
 	sf::Texture& plat2b_texture = m_textures.Get(TextureID::kPlat2B);
 	std::unique_ptr<SpriteNode> plat2b_sprite(new SpriteNode(plat2b_texture));
 	plat2b_sprite->setPosition(80.f, 1800.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2b_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2b_sprite));
+
+	
 	//2C
 	sf::Texture& plat2c_texture = m_textures.Get(TextureID::kPlat2C);
 	std::unique_ptr<SpriteNode> plat2c_sprite(new SpriteNode(plat2c_texture));
 	plat2c_sprite->setPosition(700.f, 1750.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2c_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2c_sprite));
+	
 	//2D
 	sf::Texture& plat2d_texture = m_textures.Get(TextureID::kPlat2D);
 	std::unique_ptr<SpriteNode> plat2d_sprite(new SpriteNode(plat2d_texture));
 	plat2d_sprite->setPosition(0.f, 1600.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2d_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2d_sprite));
+	
 	//2E
 	sf::Texture& plat2e_texture = m_textures.Get(TextureID::kPlat2E);
 	std::unique_ptr<SpriteNode> plat2e_sprite(new SpriteNode(plat2e_texture));
 	plat2e_sprite->setPosition(800.f, 1550.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2e_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2e_sprite));
+	
 	//2F
 	sf::Texture& plat2f_texture = m_textures.Get(TextureID::kPlat2F);
 	std::unique_ptr<SpriteNode> plat2f_sprite(new SpriteNode(plat2f_texture));
 	plat2f_sprite->setPosition(150.f, 1380.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2f_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2f_sprite));
+	
 	//2G
 	sf::Texture& plat2g_texture = m_textures.Get(TextureID::kPlat2G);
 	std::unique_ptr<SpriteNode> plat2g_sprite(new SpriteNode(plat2g_texture));
 	plat2g_sprite->setPosition(0.f, 1150.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat2g_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2g_sprite));
+	
 
 	sf::Texture& plat3_texture = m_textures.Get(TextureID::kPlat3);
 	std::unique_ptr<SpriteNode> plat3_sprite(new SpriteNode(plat3_texture));
 	plat3_sprite->setPosition(0.f, 0.f);
+	//ET:collisions with platfroms
+	m_platforms.push_back(plat3_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3_sprite));
+	
 
 	//Add the finish line
 	sf::Texture& finish_texture = m_textures.Get(TextureID::kFinishLine);
 	std::unique_ptr<SpriteNode> finish_sprite(new SpriteNode(finish_texture));
 	finish_sprite->setPosition(0.f, -1000.f);
-	SpriteNode* m_finish_sprite = finish_sprite.get();
+	m_finish_sprite = finish_sprite.get();  
 	m_scene_layers[static_cast<int>(SceneLayers::kBackground)]->AttachChild(std::move(finish_sprite));
 
 	// Sound effects
