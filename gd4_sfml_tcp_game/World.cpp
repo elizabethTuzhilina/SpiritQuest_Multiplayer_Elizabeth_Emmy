@@ -144,14 +144,29 @@ void World::RemoveCharacter(int identifier)
 
 Character* World::AddCharacter(int identifier)
 {
-	std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
+	if (randomint == 1 || randomint == 3)
+	{
+		std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
+		player->setPosition(5.f, 2200.f);
+		player->SetIdentifier(identifier);
 
-	player->setPosition(m_camera.getCenter());
-	player->SetIdentifier(identifier);
+		m_player_aircraft.emplace_back(player.get());
+		m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(player));
+		return m_player_aircraft.back();
+	}
+	else if (randomint == 0 || randomint == 2)
+	{
+		std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
+		player->setPosition(0.f, 2200.f);
+		player->SetIdentifier(identifier);
 
-	m_player_aircraft.emplace_back(player.get());
-	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(player));
-	return m_player_aircraft.back();
+		m_player_aircraft.emplace_back(player.get());
+		m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(player));
+		return m_player_aircraft.back();
+		
+	}
+	
+	Character* GetCategory();
 }
 
 /*
@@ -413,7 +428,7 @@ void World::AdaptPlayerVelocity()
 		}
 
 		//Add scrolling velocity
-		player->Accelerate(0.f, m_scrollspeed);
+		//player->Accelerate(0.f, m_scrollspeed);
 	}
 }
 
@@ -474,6 +489,25 @@ bool MatchesCategories(SceneNode::Pair& colliders, ReceiverCategories type1, Rec
 	}
 }
 
+bool MatchesCategoriesChar(SceneNode::Pair& colliders, CharacterType type1, CharacterType type2)
+{
+	unsigned int category1 = colliders.first->GetCategory();
+	unsigned int category2 = colliders.second->GetCategory();
+
+	if (static_cast<int>(type1) & category1 && static_cast<int>(type2) & category2)
+	{
+		return true;
+	}
+	else if (static_cast<int>(type1) & category2 && static_cast<int>(type2) & category1)
+	{
+		std::swap(colliders.first, colliders.second);
+	}
+	else
+	{
+		return false;
+	}
+}
+
 //E.I: Stopped code that instantly kills enemy (reaper)
 void World::HandleCollisions()
 {
@@ -481,7 +515,7 @@ void World::HandleCollisions()
 	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
 	for (SceneNode::Pair pair : collision_pairs)
 	{
-		if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kReaperR))
+		if (MatchesCategoriesChar(pair, CharacterType::kGhost, CharacterType::kReaper))
 		{
 			auto& ghost = static_cast<Character&>(*pair.first);
 			auto& reaper = static_cast<Character&>(*pair.second);
@@ -491,7 +525,7 @@ void World::HandleCollisions()
 		}
 
 		//ET: destroy player if player 2 collides with it 
-		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kReaperR))
+		else if (MatchesCategoriesChar(pair, CharacterType::kGhost, CharacterType::kReaper))
 		{
 			auto& ghost = static_cast<Character&>(*pair.first);
 			auto& reaper = static_cast<Character&>(*pair.second);
@@ -499,7 +533,7 @@ void World::HandleCollisions()
 			ghost.Destroy();
 			reaper.Damage(5);
 		}
-		else if (MatchesCategories(pair, ReceiverCategories::kPlayer1, ReceiverCategories::kPickup))
+		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kPickup))
 		{
 			auto& player = static_cast<Character&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
