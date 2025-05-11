@@ -20,7 +20,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	,m_sounds(sounds)
 	,m_scenegraph(ReceiverCategories::kNone)
 	,m_scene_layers()
-	,m_world_bounds(0.f,0.f, m_camera.getSize().x, 3000.f)
+	,m_world_bounds(0.f, 0.f, m_camera.getSize().x,3500.f)
 	,m_spawn_position(m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y/2.f - 100.f)
 	//,m_spawn_position2(m_camera.getSize().x / 2.f+2.f, m_world_bounds.height - m_camera.getSize().y / 2.f - 250.f )
 	,m_scrollspeed(-50.f)
@@ -77,7 +77,10 @@ void World::Update(sf::Time dt)
 		// Check for collisions with each platform
 		for (SpriteNode* platform : m_platforms)  // m_platforms is the list of platforms in the world
 		{
-			player->CheckPlatformCollision(*platform);  // Check collision with each platform
+			if (platform != nullptr && !platform->IsMarkedForRemoval())
+			{
+				player->CheckPlatformCollision(*platform);
+			}  // Check collision with each platform and prevents crash if platform pointer is deleted
 		}
 		// Check for world boundary collisions
 		player->CheckWorldBoundaryCollision();
@@ -102,6 +105,19 @@ void World::Draw()
 		m_target.setView(m_camera);
 		m_target.draw(m_scenegraph);
 	}
+#ifdef _DEBUG
+	for (auto* platform : m_platforms)
+	{
+		sf::RectangleShape rect;
+		sf::FloatRect bounds = platform->GetBoundingRect();
+		rect.setPosition(bounds.left, bounds.top);
+		rect.setSize({ bounds.width, bounds.height });
+		rect.setFillColor(sf::Color::Transparent);
+		rect.setOutlineColor(sf::Color::Red);
+		rect.setOutlineThickness(2.f);
+		m_target.draw(rect);
+	}
+#endif
 }
 
 Character* World::GetCharacter(int identifier) const
@@ -343,7 +359,7 @@ void World::BuildScene()
 	std::unique_ptr<SpriteNode> plat3_sprite(new SpriteNode(plat3_texture));
 	plat3_sprite->setPosition(0.f, 0.f);
 	//ET:collisions with platfroms
-	m_platforms.push_back(plat3_sprite.get());
+	//m_platforms.push_back(plat3_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3_sprite));
 	
 
@@ -411,8 +427,8 @@ sf::FloatRect World::GetBattleFieldBounds() const
 {
 	//Return camera bounds + a small area at the top where enemies spawn
 	sf::FloatRect bounds = GetViewBounds();
-	bounds.top -= 100.f;
-	bounds.height += 100.f;
+	bounds.top -= 1600.f;        // extend detection far above
+	bounds.height += 1600.f;    // extend detection range
 
 	return bounds;
 
@@ -426,7 +442,9 @@ void World::DestroyEntitiesOutsideView()
 	command.action = DerivedAction<Entity>([this](Entity& e, sf::Time dt)
 		{
 			//Does the object intersect with the battlefield
-			if (!GetBattleFieldBounds().intersects(e.GetBoundingRect()))
+			//ET: doesnt touch the platforms or background 
+			if (!GetBattleFieldBounds().intersects(e.GetBoundingRect()) &&
+				dynamic_cast<const SpriteNode*>(&e) == nullptr)
 			{
 				e.Remove();
 			}

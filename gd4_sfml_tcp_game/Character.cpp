@@ -537,15 +537,18 @@ void Character::CheckWorldBoundaryCollision()
 	sf::Vector2f position = getPosition();
 	sf::FloatRect bounds = m_world_bounds;
 
-	// Wrap horizontally
+	// Clamp horizontally
 	if (position.x < bounds.left)
-		setPosition(bounds.left + bounds.width, position.y);
+		position.x = bounds.left;
 	else if (position.x > bounds.left + bounds.width)
-		setPosition(bounds.left, position.y);
+		position.x = bounds.left + bounds.width;
 
-	// Wrap vertically
+	// Clamp vertically (no wrap!)
 	if (position.y < bounds.top)
-		setPosition(position.x, bounds.top + bounds.height);
+		position.y = bounds.top;
 	else if (position.y > bounds.top + bounds.height)
-		setPosition(position.x, bounds.top);
+		position.y = bounds.top + bounds.height;
+
+	setPosition(position);
+
 }
