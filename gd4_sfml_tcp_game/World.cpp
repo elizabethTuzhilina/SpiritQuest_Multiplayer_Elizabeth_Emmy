@@ -144,6 +144,9 @@ void World::RemoveCharacter(int identifier)
 
 Character* World::AddCharacter(int identifier)
 {
+	int randomint = rand() % 4;
+
+
 	if (randomint == 1 || randomint == 3)
 	{
 		std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
