@@ -121,7 +121,7 @@ unsigned int Character::GetCategory() const
 	}
 	if (IsGhost()==false)
 	{
-		return static_cast<unsigned int>(ReceiverCategories::kReaperR);
+		return static_cast<unsigned int>(ReceiverCategories::kGhostR);
 
 	}
 

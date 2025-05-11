@@ -144,13 +144,14 @@ void World::RemoveCharacter(int identifier)
 
 Character* World::AddCharacter(int identifier)
 {
+	srand(time(0));
 	int randomint = rand() % 4;
 
 
 	if (randomint == 1 || randomint == 3)
 	{
 		std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
-		player->setPosition(5.f, 2200.f);
+		player->setPosition(500.f, 2700.f);
 		player->SetIdentifier(identifier);
 
 		m_player_aircraft.emplace_back(player.get());
@@ -159,8 +160,8 @@ Character* World::AddCharacter(int identifier)
 	}
 	else if (randomint == 0 || randomint == 2)
 	{
-		std::unique_ptr<Character> player(new Character(CharacterType::kGhost, m_textures, m_fonts, m_world_bounds));
-		player->setPosition(0.f, 2200.f);
+		std::unique_ptr<Character> player(new Character(CharacterType::kReaper, m_textures, m_fonts, m_world_bounds));
+		player->setPosition(500.f, 2990.f);
 		player->SetIdentifier(identifier);
 
 		m_player_aircraft.emplace_back(player.get());
@@ -286,7 +287,7 @@ void World::BuildScene()
 	// Bottom sprite
 	sf::Texture& bottom_texture = m_textures.Get(TextureID::kBottom);
 	std::unique_ptr<SpriteNode> bottom_sprite(new SpriteNode(bottom_texture));
-	bottom_sprite->setPosition(0.f, 2300.f);
+	bottom_sprite->setPosition(0.f, 2700.f);
 	m_scene_layers[static_cast<int>(SceneLayers::kLowerAir)]->AttachChild(std::move(bottom_sprite));
 
 	// Cloud sprite
