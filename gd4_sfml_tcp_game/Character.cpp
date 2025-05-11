@@ -12,6 +12,7 @@
 #include "BulletDirection.hpp"
 #include "SpriteNode.hpp"
 #include "NetworkNode.hpp"
+#include <iostream>
 
 //E.I, Changed ALL "aircrafttype" & "aircraft" references to "character" & "charactertype"
 namespace
@@ -307,6 +308,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 sf::FloatRect Character::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+	
 }
 
 bool Character::IsMarkedForRemoval() const
@@ -493,32 +495,40 @@ void Character::PlayLocalSound(CommandQueue& commands, SoundEffect effect)
 
 	commands.Push(command);
 }
-//ET:
+//ET: platform collision
 void Character::CheckPlatformCollision(const SpriteNode& platform)
 {
-	 sf::FloatRect platformBounds = platform.GetBoundingRect();
-	sf::FloatRect characterBounds = GetBoundingRect();
+	const sf::FloatRect characterBounds = GetBoundingRect();
+	const sf::FloatRect platformBounds = platform.GetBoundingRect();
 
 	if (characterBounds.intersects(platformBounds))
 	{
-		// Simple resolution: bounce slightly
+		std::cout << "Character collided with platform!" << std::endl;
 		sf::Vector2f velocity = GetVelocity();
+		sf::FloatRect overlap;
 
-		// Reflect X if hitting side
-		if (characterBounds.left < platformBounds.left ||
-			characterBounds.left + characterBounds.width > platformBounds.left + platformBounds.width)
-		{
-			velocity.x = -velocity.x * 0.5f;
+		// Compute overlap rect
+		overlap.left = std::max(characterBounds.left, platformBounds.left);
+		overlap.top = std::max(characterBounds.top, platformBounds.top);
+		overlap.width = std::min(characterBounds.left + characterBounds.width, platformBounds.left + platformBounds.width) - overlap.left;
+		overlap.height = std::min(characterBounds.top + characterBounds.height, platformBounds.top + platformBounds.height) - overlap.top;
+
+		if (overlap.width < overlap.height) {
+			// Horizontal collision
+			if (characterBounds.left < platformBounds.left)
+				move(-overlap.width, 0); // Push left
+			else
+				move(overlap.width, 0);  // Push right
+			SetVelocity(0.f, velocity.y);
 		}
-
-		// Reflect Y if hitting top/bottom
-		if (characterBounds.top < platformBounds.top ||
-			characterBounds.top + characterBounds.height > platformBounds.top + platformBounds.height)
-		{
-			velocity.y = -velocity.y * 0.5f;
+		else {
+			// Vertical collision
+			if (characterBounds.top < platformBounds.top)
+				move(0, -overlap.height); // Push up
+			else
+				move(0, overlap.height);  // Push down
+			SetVelocity(velocity.x, 0.f);
 		}
-
-		SetVelocity(velocity);
 	}
 }
 //ET:
@@ -527,15 +537,18 @@ void Character::CheckWorldBoundaryCollision()
 	sf::Vector2f position = getPosition();
 	sf::FloatRect bounds = m_world_bounds;
 
-	// Wrap horizontally
+	// Clamp horizontally
 	if (position.x < bounds.left)
-		setPosition(bounds.left + bounds.width, position.y);
+		position.x = bounds.left;
 	else if (position.x > bounds.left + bounds.width)
-		setPosition(bounds.left, position.y);
+		position.x = bounds.left + bounds.width;
 
-	// Wrap vertically
+	// Clamp vertically (no wrap!)
 	if (position.y < bounds.top)
-		setPosition(position.x, bounds.top + bounds.height);
+		position.y = bounds.top;
 	else if (position.y > bounds.top + bounds.height)
-		setPosition(position.x, bounds.top);
+		position.y = bounds.top + bounds.height;
+
+	setPosition(position);
+
 }

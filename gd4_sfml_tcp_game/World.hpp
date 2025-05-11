@@ -87,7 +87,7 @@ private:
 	BloomEffect m_bloom_effect;
 	bool m_networked_world;
 	NetworkNode* m_network_node;
-	std::unique_ptr<SpriteNode> m_finish_sprite;
+	SpriteNode* m_finish_sprite;
 	std::vector<SpriteNode*> m_platforms;  // Store platforms for collision checks
 
 };

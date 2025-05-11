@@ -35,6 +35,8 @@ public:
 	void CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collison_pairs);
 	void RemoveWrecks();
 	virtual unsigned int GetCategory() const;
+	virtual bool IsDestroyed() const;
+	virtual bool IsMarkedForRemoval() const;
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);
@@ -48,8 +50,7 @@ private:
 	
 
 	void CheckNodeCollision(SceneNode& node, std::set<Pair>& collison_pairs);
-	virtual bool IsDestroyed() const;
-	virtual bool IsMarkedForRemoval() const;
+	
 
 private:
 	std::vector<Ptr> m_children;
