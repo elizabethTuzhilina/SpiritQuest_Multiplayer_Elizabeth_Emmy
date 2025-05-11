@@ -10,8 +10,9 @@
 #include "Pickup.hpp"
 #include "SoundNode.hpp"
 #include "BulletDirection.hpp"
-
+#include "SpriteNode.hpp"
 #include "NetworkNode.hpp"
+#include <iostream>
 
 //E.I, Changed ALL "aircrafttype" & "aircraft" references to "character" & "charactertype"
 namespace
@@ -34,7 +35,7 @@ TextureID ToTextureID(CharacterType type)
 	return TextureID::kGhost;
 }
 
-Character::Character(CharacterType type, const TextureHolder& textures, const FontHolder& fonts)  
+Character::Character(CharacterType type, const TextureHolder& textures, FontHolder& fonts, sf::FloatRect worldBounds)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
@@ -54,6 +55,7 @@ Character::Character(CharacterType type, const TextureHolder& textures, const Fo
 	, m_spawned_pickup(false)
 	, m_played_explosion_sound(false)
 	, m_identifier(0)
+	, m_world_bounds (worldBounds)
 	
 
 {
@@ -141,10 +143,6 @@ void Character::IncreaseFireSpread()
 	}
 }
 
-void Character::CollectMissile(unsigned int count)
-{
-	m_missile_ammo += count;
-}
 
 //E.I
 void Character::UpdateTexts()
@@ -252,14 +250,7 @@ void Character::FireRight()
 
 
 
-void Character::LaunchMissile()
-{
-	if (m_missile_ammo > 0)
-	{
-		m_is_launching_missile = true;
-		--m_missile_ammo;
-	}
-}
+
 
 void Character::CreateBullet(SceneNode& node, const TextureHolder& textures) const
 {
@@ -317,6 +308,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 sf::FloatRect Character::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+	
 }
 
 bool Character::IsMarkedForRemoval() const
@@ -502,4 +494,61 @@ void Character::PlayLocalSound(CommandQueue& commands, SoundEffect effect)
 		});
 
 	commands.Push(command);
+}
+//ET: platform collision
+void Character::CheckPlatformCollision(const SpriteNode& platform)
+{
+	const sf::FloatRect characterBounds = GetBoundingRect();
+	const sf::FloatRect platformBounds = platform.GetBoundingRect();
+
+	if (characterBounds.intersects(platformBounds))
+	{
+		std::cout << "Character collided with platform!" << std::endl;
+		sf::Vector2f velocity = GetVelocity();
+		sf::FloatRect overlap;
+
+		// Compute overlap rect
+		overlap.left = std::max(characterBounds.left, platformBounds.left);
+		overlap.top = std::max(characterBounds.top, platformBounds.top);
+		overlap.width = std::min(characterBounds.left + characterBounds.width, platformBounds.left + platformBounds.width) - overlap.left;
+		overlap.height = std::min(characterBounds.top + characterBounds.height, platformBounds.top + platformBounds.height) - overlap.top;
+
+		if (overlap.width < overlap.height) {
+			// Horizontal collision
+			if (characterBounds.left < platformBounds.left)
+				move(-overlap.width, 0); // Push left
+			else
+				move(overlap.width, 0);  // Push right
+			SetVelocity(0.f, velocity.y);
+		}
+		else {
+			// Vertical collision
+			if (characterBounds.top < platformBounds.top)
+				move(0, -overlap.height); // Push up
+			else
+				move(0, overlap.height);  // Push down
+			SetVelocity(velocity.x, 0.f);
+		}
+	}
+}
+//ET:
+void Character::CheckWorldBoundaryCollision()
+{
+	sf::Vector2f position = getPosition();
+	sf::FloatRect bounds = m_world_bounds;
+
+	// Clamp horizontally
+	if (position.x < bounds.left)
+		position.x = bounds.left;
+	else if (position.x > bounds.left + bounds.width)
+		position.x = bounds.left + bounds.width;
+
+	// Clamp vertically (no wrap!)
+	if (position.y < bounds.top)
+		position.y = bounds.top;
+	else if (position.y > bounds.top + bounds.height)
+		position.y = bounds.top + bounds.height;
+
+	setPosition(position);
+
 }

@@ -9,11 +9,14 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include "Animation.hpp"
 #include "BulletDirection.hpp"
+#include "SceneNode.hpp"
+#include "SpriteNode.hpp"
+
 
 class Character : public Entity
 {
 public:
-	Character(CharacterType type, const TextureHolder& textures, const FontHolder& fonts);
+	Character(CharacterType type, const TextureHolder& textures,FontHolder& fonts, sf::FloatRect worldBounds);
 	unsigned int GetCategory() const override;
 
 	//void DisablePickups();
@@ -23,7 +26,7 @@ public:
 
 	void IncreaseFireRate();
 	void IncreaseFireSpread();
-	void CollectMissile(unsigned int count);
+	
 
 	void UpdateTexts();
 	void UpdateMovementPattern(sf::Time dt);
@@ -34,7 +37,6 @@ public:
 	void FireDown();
 	void FireLeft();
 	void FireRight();
-	void LaunchMissile();
 	void CreateBullet(SceneNode& node, const TextureHolder& textures) const;
 	void CreateProjectile(SceneNode& node, ProjectileType type, float x_float, float y_offset, const TextureHolder& textures) const;
 
@@ -46,6 +48,12 @@ public:
 	//void Remove() ;
 	void PlayLocalSound(CommandQueue& commands, SoundEffect effect);
 
+	// Check if this character is within the world boundaries
+	void CheckWorldBoundaryCollision();
+	// Check if this character collides with the platform
+	void CheckPlatformCollision(const SpriteNode& platform);
+
+
 private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -56,6 +64,9 @@ private:
 	void UpdateRollAnimation();
 
 	void UpdateBulletDirection();
+
+	
+
 
 private:
 	CharacterType m_type;
@@ -95,7 +106,7 @@ private:
 	int m_identifier;
 
 	
-	
+	sf::FloatRect m_world_bounds;
 
 };
 

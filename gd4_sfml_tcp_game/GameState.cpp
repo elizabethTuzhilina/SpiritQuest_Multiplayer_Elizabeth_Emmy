@@ -4,13 +4,14 @@
 #include "Player.hpp"
 #include "MissionStatus.hpp"
 
-GameState::GameState(StateStack& stack, Context context) : State(stack, context), m_world(*context.window, *context.fonts, *context.sounds, false), m_player(nullptr, 1, context.keys1)
+GameState::GameState(StateStack& stack, Context context)
+	: State(stack, context),
+	m_world(*context.window, *context.fonts, *context.sounds, false),
+	m_player(nullptr, 1, context.keys1)  
 {
-
-	m_world.AddCharacter(1);
+	m_world.AddCharacter(1);  // add the character separately
 	m_player.SetMissionStatus(MissionStatus::kMissionRunning);
-
-	//Play the music
+	//Play Music
 	context.music->Play(MusicThemes::kMissionTheme);
 }
 
