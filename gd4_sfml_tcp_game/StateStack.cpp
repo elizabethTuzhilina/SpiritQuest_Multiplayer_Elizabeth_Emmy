@@ -5,7 +5,7 @@
 #include <SFML/Window/Event.hpp>
 #include <cassert>
 
-StateStack::StateStack(State::Context context) : m_context(context)
+StateStack::StateStack(State::Context& context) : m_context(context)
 {
 }
 

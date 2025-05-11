@@ -9,8 +9,10 @@ GameState::GameState(StateStack& stack, Context context)
 	m_world(*context.window, *context.fonts, *context.sounds, false),
 	m_player(nullptr, 1, context.keys1)  
 {
+	context.player = &m_player; 
 	m_world.AddCharacter(1);  // add the character separately
 	m_player.SetMissionStatus(MissionStatus::kMissionRunning);
+	
 	//Play Music
 	context.music->Play(MusicThemes::kMissionTheme);
 }
@@ -22,8 +24,9 @@ void GameState::Draw()
 
 bool GameState::Update(sf::Time dt)
 {
+	
 
-	m_world.Update(dt);
+	/*
 	if (!m_world.HasAlivePlayer())
 	{
 		m_player.SetMissionStatus(MissionStatus::kMissionSuccessReaperGD);
@@ -52,7 +55,23 @@ bool GameState::Update(sf::Time dt)
 		//m_player2.SetMissionStatus(MissionStatus::kMissionFailureReaper);
 		RequestStackPush(StateID::kGameOver);
 	}
-	
+	*/	
+	m_world.Update(dt);
+	int ghostCount = m_world.CountCharacters(CharacterType::kGhost);
+	int reaperCount = m_world.CountCharacters(CharacterType::kReaper);
+	bool ghostReachedFinish = m_world.HasPlayerReachedEnd();
+
+	if (ghostCount == 0 && reaperCount > 0)
+	{
+		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessReaperCG);
+		RequestStackPush(StateID::kGameOver);
+	}
+	else if (ghostReachedFinish || reaperCount == 0)
+	{
+		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessGhostFL);
+		RequestStackPush(StateID::kGameOver);
+	}
+
 	
 	CommandQueue& commands = m_world.GetCommandQueue();
 	m_player.HandleRealTimeInput(commands);

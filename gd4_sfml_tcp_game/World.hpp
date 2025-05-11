@@ -44,6 +44,8 @@ public:
 	Character* GetCharacter(int identifier) const;
 	sf::FloatRect GetBattleFieldBounds() const;
 	bool PollGameAction(GameActions::Action& out);
+	int CountCharacters(CharacterType type) const;
+	
 
 private:
 	void LoadTextures();
