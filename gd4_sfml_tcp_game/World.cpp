@@ -385,7 +385,7 @@ void World::BuildScene()
 	m_platforms.push_back(plat2g_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2g_sprite));
 	
-	//3A
+	//Plat 3, A
 	sf::Texture& plat3a_texture = m_textures.Get(TextureID::kPlat3A);
 	std::unique_ptr<SpriteNode> plat3a_sprite(new SpriteNode(plat3a_texture));
 	plat3a_sprite->setPosition(0.f, 1000.f);
@@ -630,7 +630,7 @@ void World::HandleCollisions()
 			pickup.Destroy();
 			player.PlayLocalSound(m_command_queue, SoundEffect::kCollectPickup);
 		}
-		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kEnemyProjectile) || MatchesCategories(pair, ReceiverCategories::kReaperR, ReceiverCategories::kAlliedProjectile))
+		else if (MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kEnemyProjectile) || MatchesCategories(pair, ReceiverCategories::kGhostR, ReceiverCategories::kAlliedProjectile))
 		{
 			auto& aircraft = static_cast<Character&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);

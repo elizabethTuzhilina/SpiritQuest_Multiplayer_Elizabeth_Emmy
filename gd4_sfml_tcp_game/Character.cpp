@@ -278,6 +278,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().width, y_offset * m_sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
+	sf::Vector2f shield(5, 5);
 	
 
 	switch (GetBulletDirection())
@@ -300,7 +301,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 		break;
 	}
 
-	projectile->setPosition(GetWorldPosition() + offset);
+	projectile->setPosition(GetWorldPosition() + offset + shield);
 	projectile->SetVelocity(velocity);
 	node.AttachChild(std::move(projectile));
 }
