@@ -587,3 +587,15 @@ void World::UpdateSounds()
 	// Remove unused sounds
 	m_sounds.RemoveStoppedSounds();
 }
+
+//ET
+int World::CountCharacters(CharacterType type) const
+{
+	return std::count_if(m_player_aircraft.begin(), m_player_aircraft.end(),
+		[type](Character* c)
+		{
+			return !c->IsMarkedForRemoval() &&
+				((type == CharacterType::kGhost && c->IsGhost()) ||
+					(type == CharacterType::kReaper && c->IsReaper()));
+		});
+}

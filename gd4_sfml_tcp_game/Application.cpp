@@ -10,19 +10,26 @@
 
 const sf::Time Application::kTimePerFrame = sf::seconds(1.f/60.f);
 
-Application::Application() :m_window(sf::VideoMode(1024, 768), "Networked", sf::Style::Close)
-, m_key_binding_1(1), m_key_binding_2(2)
-, m_stack(State::Context(m_window, m_textures, m_fonts, m_music, m_sound, m_key_binding_1, m_key_binding_2))
+Application::Application()
+	: m_window(sf::VideoMode(1024, 768), "Networked", sf::Style::Close)
+	, m_key_binding_1(1)
+	, m_key_binding_2(2)
+	, m_player1(nullptr, 1, &m_key_binding_1)
+	, m_context(m_window, m_textures, m_fonts, m_music, m_sound, m_key_binding_1, m_key_binding_2)
+	, m_stack(m_context)
 {
+	m_context.player = &m_player1;
 	m_window.setKeyRepeatEnabled(false);
+
 	m_fonts.Load(Font::kMain, "Media/Fonts/Super-Mario-World.ttf");
 	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/SpiritQuestBackground.png");
 	m_textures.Load(TextureID::kButtonNormal, "Media/Textures/32x32 Blue Bubble Buttons/Blank Buttons/Blue_Button_01.png");
 	m_textures.Load(TextureID::kButtonSelected, "Media/Textures/32x32 Blue Bubble Buttons/Blank Buttons/Blue_Button_02.png");
 	m_textures.Load(TextureID::kButtonActivated, "Media/Textures/32x32 Blue Bubble Buttons/Blank Buttons/Blue_Button_03.png");
 	m_textures.Load(TextureID::kButtons, "Media/Textures/BlueButtons.png");
-	m_textures.Load(TextureID::kSettingsBackground, "Media/Textures/Clouds 3/1.png");//ET
+	m_textures.Load(TextureID::kSettingsBackground, "Media/Textures/Clouds 3/1.png");
 	m_textures.Load(TextureID::kSettingsHeader, "Media/Textures/32x32 Blue Bubble Buttons/Buttons With Text/Text_Settings_Button_021.png");
+
 	RegisterStates();
 	m_stack.PushState(StateID::kTitle);
 }

@@ -18,23 +18,11 @@ GameOverState::GameOverState(StateStack& stack, Context context, const std::stri
 
     if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessGhostFL)
     {
-        m_game_over_text.setString("The Ghost Team has escaped the Reaper! \n \n          Player 1 wins");
+        m_game_over_text.setString("The Ghosts have escaped the Reapers! \n \n         The Ghosts Win ");
     }
     else if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessReaperCG)
     {
-        m_game_over_text.setString("The Reaper Team has reaped the Ghosts! \n \n           Player 2 wins");
-    }
-    else if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessGhostRD)
-    {
-        m_game_over_text.setString("The Reapers were Defeated! \n \n        Player 1 wins");
-    }
-    else if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessReaperGD)
-    {
-        m_game_over_text.setString("The Ghosts were Defeated! \n \n         Player 2 wins");
-    }
-    else if (context.player->GetMissionStatus() == MissionStatus::kMissionFailureReaper)
-    {
-        m_game_over_text.setString("The Reapers has Failed! \n \n         Player 1 wins");
+        m_game_over_text.setString("The Reaper Team has reaped the Ghosts! \n \n           The Reapers Win");
     }
     else
     {
