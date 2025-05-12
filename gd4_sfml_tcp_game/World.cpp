@@ -236,8 +236,10 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kFireRate, "Media/Textures/FireRate.png");
 	m_textures.Load(TextureID::kFinishLine, "Media/Textures/FinishLine.png");
 	m_textures.Load(TextureID::kBottom, "Media/Textures/Pixel-16px Graveyard/parallax/parallax2(exp).png");
+
 	m_textures.Load(TextureID::kPlat1A, "Media/Textures/Pixel-16px Graveyard/parallax/plat1/plat1-A.png");
 	m_textures.Load(TextureID::kPlat1B, "Media/Textures/Pixel-16px Graveyard/parallax/plat1/plat1-B.png");
+
 	m_textures.Load(TextureID::kPlat2A, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/Plat2-A.png");
 	m_textures.Load(TextureID::kPlat2B, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-B.png");
 	m_textures.Load(TextureID::kPlat2C, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-C.png");
@@ -245,7 +247,17 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kPlat2E, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-E.png");
 	m_textures.Load(TextureID::kPlat2F, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-F.png");
 	m_textures.Load(TextureID::kPlat2G, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-G.png");
-	m_textures.Load(TextureID::kPlat3, "Media/Textures/Pixel-16px Graveyard/parallax/plat3.png");
+
+	m_textures.Load(TextureID::kPlat3A, "C:/Users/D00244320/Desktop/SpiritQuest_Multiplayer_Elizabeth_Emmy/SpiritQuest_Multiplayer_Elizabeth_Emmy/gd4_sfml_tcp_game/Media/Textures/Pixel-16px Graveyard/parallax/Plat3/plat3A.png");
+	m_textures.Load(TextureID::kPlat3B, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3B.png");
+	m_textures.Load(TextureID::kPlat3C, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3C.png");
+	m_textures.Load(TextureID::kPlat3D, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3D.png");
+	m_textures.Load(TextureID::kPlat3E, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3E.png");
+	m_textures.Load(TextureID::kPlat3F, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3F.png");
+	m_textures.Load(TextureID::kPlat3G, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3G.png");
+	m_textures.Load(TextureID::kPlat3H, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3H.png");
+	m_textures.Load(TextureID::kPlat3I, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3I.png");
+
 	m_textures.Load(TextureID::kEntities, "Media/Textures/Reaper(AnimatedPixelArt)/Preview/Reap(1).png");
 	m_textures.Load(TextureID::kJungle, "Media/Textures/Clouds 3/1.png");
 	m_textures.Load(TextureID::kCloud, "Media/Textures/Clouds 3/3.png");
@@ -374,12 +386,12 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat2g_sprite));
 	
 
-	sf::Texture& plat3_texture = m_textures.Get(TextureID::kPlat3);
-	std::unique_ptr<SpriteNode> plat3_sprite(new SpriteNode(plat3_texture));
-	plat3_sprite->setPosition(0.f, 0.f);
+	sf::Texture& plat3a_texture = m_textures.Get(TextureID::kPlat3A);
+	std::unique_ptr<SpriteNode> plat3a_sprite(new SpriteNode(plat3a_texture));
+	plat3a_sprite->setPosition(0.f, 1000.f);
 	//ET:collisions with platfroms
-	//m_platforms.push_back(plat3_sprite.get());
-	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3_sprite));
+	m_platforms.push_back(plat3a_sprite.get());
+	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3a_sprite));
 	
 
 	//Add the finish line

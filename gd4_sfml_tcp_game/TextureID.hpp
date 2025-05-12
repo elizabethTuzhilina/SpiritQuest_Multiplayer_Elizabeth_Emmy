@@ -30,7 +30,16 @@ enum class TextureID
 	kPlat2F,
 	kPlat2G,
 
-	kPlat3,
+	kPlat3A,
+	kPlat3B,
+	kPlat3C,
+	kPlat3D,
+	kPlat3E,
+	kPlat3F,
+	kPlat3G,
+	kPlat3H,
+	kPlat3I,
+	kPlat3J,
 
 
 	kCloud,

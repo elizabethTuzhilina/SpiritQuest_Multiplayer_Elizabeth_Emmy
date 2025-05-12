@@ -16,11 +16,12 @@ GameOverState::GameOverState(StateStack& stack, Context context, const std::stri
 
     m_game_over_text.setFont(font);
 
-    if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessGhostFL)
+   /* if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessGhostFL)
     {
         m_game_over_text.setString("The Ghosts have escaped the Reapers! \n \n         The Ghosts Win ");
     }
-    else if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessReaperCG)
+    */
+    if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccessReaperCG)
     {
         m_game_over_text.setString("The Reaper Team has reaped the Ghosts! \n \n           The Reapers Win");
     }
@@ -28,6 +29,7 @@ GameOverState::GameOverState(StateStack& stack, Context context, const std::stri
     {
         m_game_over_text.setString("Both Teams have failed...\n \n    Try again");
     }
+    
         
     m_game_over_text.setCharacterSize(30);
     Utility::CentreOrigin(m_game_over_text);
