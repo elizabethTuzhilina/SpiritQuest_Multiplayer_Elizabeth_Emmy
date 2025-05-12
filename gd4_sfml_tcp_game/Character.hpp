@@ -27,7 +27,7 @@ public:
 	void IncreaseFireRate();
 	void IncreaseFireSpread();
 	
-
+	void SetName(std::string name) { m_name_display->SetString(name); };
 	void UpdateTexts();
 	void UpdateMovementPattern(sf::Time dt);
 
@@ -73,6 +73,7 @@ private:
 	sf::Sprite m_sprite;
 	Animation m_explosion;
 
+	TextNode* m_name_display;
 	TextNode* m_spirit_energy_display;
 	TextNode* m_missile_display;
 	float m_distance_travelled;

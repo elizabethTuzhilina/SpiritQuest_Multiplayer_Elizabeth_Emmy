@@ -89,13 +89,14 @@ Character::Character(CharacterType type, const TextureHolder& textures, FontHold
 	m_spirit_energy_display = spirit_energy_display.get();
 	AttachChild(std::move(spirit_energy_display));
 
-	if (Character::GetCategory() == static_cast<int>(ReceiverCategories::kPlayer1))
-	{
-		std::string* missile_ammo = new std::string("");
-		std::unique_ptr<TextNode> missile_display(new TextNode(fonts, *missile_ammo));
-		m_missile_display = missile_display.get();
-		AttachChild(std::move(missile_display));
-	}
+	//E.I Adding Name Tag Code
+	std::string name = std::to_string(m_identifier);
+	std::unique_ptr<TextNode> name_display(new TextNode(fonts, name));
+	name_display->SetString(name);
+	m_name_display = name_display.get();
+	m_name_display->setPosition(0, -30.f);
+
+	AttachChild(std::move(name_display));
 
 	UpdateTexts();
 }
@@ -150,6 +151,7 @@ void Character::UpdateTexts()
 	if (IsDestroyed())
 	{
 		m_spirit_energy_display->SetString("");
+		m_name_display->SetString("");
 	}
 	else
 	{
@@ -157,6 +159,8 @@ void Character::UpdateTexts()
 	}
 	m_spirit_energy_display->setPosition(0.f, 50.f);
 	m_spirit_energy_display->setRotation(-getRotation());
+
+
 
 	if (m_missile_display)
 	{
