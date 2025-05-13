@@ -278,7 +278,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().width, y_offset * m_sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
-	sf::Vector2f shield(5, 5);
+	sf::Vector2f shield(60, 60);
 	
 
 	switch (GetBulletDirection())

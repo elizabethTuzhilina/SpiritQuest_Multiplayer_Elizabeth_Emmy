@@ -64,12 +64,12 @@ bool GameState::Update(sf::Time dt)
 	if (ghostCount == 0 && reaperCount > 0)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessReaperCG);
-		RequestStackPush(StateID::kGameOver);
+		//RequestStackPush(StateID::kGameOver);
 	}
 	else if (ghostReachedFinish || reaperCount == 0)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessGhostFL);
-		RequestStackPush(StateID::kGameOver);
+		//RequestStackPush(StateID::kGameOver);
 	}
 
 	

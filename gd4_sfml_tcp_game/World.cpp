@@ -248,15 +248,15 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kPlat2F, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-F.png");
 	m_textures.Load(TextureID::kPlat2G, "Media/Textures/Pixel-16px Graveyard/parallax/plat2/plat2-G.png");
 
-	m_textures.Load(TextureID::kPlat3A, "Media/Textures/Pixel-16px Graveyard/parallax/Plat3/plat3A.png");
-	m_textures.Load(TextureID::kPlat3B, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3B.png");
-	m_textures.Load(TextureID::kPlat3C, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3C.png");
-	m_textures.Load(TextureID::kPlat3D, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3D.png");
-	m_textures.Load(TextureID::kPlat3E, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3E.png");
-	m_textures.Load(TextureID::kPlat3F, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3F.png");
-	m_textures.Load(TextureID::kPlat3G, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3G.png");
-	m_textures.Load(TextureID::kPlat3H, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3H.png");
-	m_textures.Load(TextureID::kPlat3I, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3I.png");
+	m_textures.Load(TextureID::kPlat3A, "Media/Textures/Pixel-16px Graveyard/parallax/Plat3/plat3-A.png");
+	m_textures.Load(TextureID::kPlat3B, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-B.png");
+	m_textures.Load(TextureID::kPlat3C, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-C.png");
+	m_textures.Load(TextureID::kPlat3D, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-D.png");
+	m_textures.Load(TextureID::kPlat3E, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-E.png");
+	m_textures.Load(TextureID::kPlat3F, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-F.png");
+	m_textures.Load(TextureID::kPlat3G, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-G.png");
+	m_textures.Load(TextureID::kPlat3H, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-H.png");
+	m_textures.Load(TextureID::kPlat3I, "Media/Textures/Pixel-16px Graveyard/parallax/plat3/plat3-I.png");
 
 	m_textures.Load(TextureID::kEntities, "Media/Textures/Reaper(AnimatedPixelArt)/Preview/Reap(1).png");
 	m_textures.Load(TextureID::kJungle, "Media/Textures/Clouds 3/1.png");
@@ -388,7 +388,7 @@ void World::BuildScene()
 	//Plat 3, A
 	sf::Texture& plat3a_texture = m_textures.Get(TextureID::kPlat3A);
 	std::unique_ptr<SpriteNode> plat3a_sprite(new SpriteNode(plat3a_texture));
-	plat3a_sprite->setPosition(0.f, 1000.f);
+	plat3a_sprite->setPosition(100.f, 1000.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3a_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3a_sprite));
@@ -396,7 +396,7 @@ void World::BuildScene()
 	//3B
 	sf::Texture& plat3b_texture = m_textures.Get(TextureID::kPlat3B);
 	std::unique_ptr<SpriteNode> plat3b_sprite(new SpriteNode(plat3b_texture));
-	plat3b_sprite->setPosition(0.f, 1000.f);
+	plat3b_sprite->setPosition(300.f, 850.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3b_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3b_sprite));
@@ -404,7 +404,7 @@ void World::BuildScene()
 	//3C
 	sf::Texture& plat3c_texture = m_textures.Get(TextureID::kPlat3C);
 	std::unique_ptr<SpriteNode> plat3c_sprite(new SpriteNode(plat3c_texture));
-	plat3c_sprite->setPosition(0.f, 1000.f);
+	plat3c_sprite->setPosition(0.f, 650.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3c_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3c_sprite));
@@ -412,7 +412,7 @@ void World::BuildScene()
 	//3D
 	sf::Texture& plat3d_texture = m_textures.Get(TextureID::kPlat3D);
 	std::unique_ptr<SpriteNode> plat3d_sprite(new SpriteNode(plat3d_texture));
-	plat3d_sprite->setPosition(0.f, 1000.f);
+	plat3d_sprite->setPosition(700.f, 680.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3d_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3d_sprite));
@@ -420,7 +420,7 @@ void World::BuildScene()
 	//3E
 	sf::Texture& plat3e_texture = m_textures.Get(TextureID::kPlat3E);
 	std::unique_ptr<SpriteNode> plat3e_sprite(new SpriteNode(plat3e_texture));
-	plat3e_sprite->setPosition(0.f, 1000.f);
+	plat3e_sprite->setPosition(0.f, 450.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3e_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3e_sprite));
@@ -428,7 +428,7 @@ void World::BuildScene()
 	//3F
 	sf::Texture& plat3f_texture = m_textures.Get(TextureID::kPlat3F);
 	std::unique_ptr<SpriteNode> plat3f_sprite(new SpriteNode(plat3f_texture));
-	plat3f_sprite->setPosition(0.f, 1000.f);
+	plat3f_sprite->setPosition(600.f, 480.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3f_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3f_sprite));
@@ -436,7 +436,7 @@ void World::BuildScene()
 	//3G
 	sf::Texture& plat3g_texture = m_textures.Get(TextureID::kPlat3G);
 	std::unique_ptr<SpriteNode> plat3g_sprite(new SpriteNode(plat3g_texture));
-	plat3g_sprite->setPosition(0.f, 1000.f);
+	plat3g_sprite->setPosition(100.f, 300.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3g_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3g_sprite));
@@ -444,7 +444,7 @@ void World::BuildScene()
 	//3H
 	sf::Texture& plat3h_texture = m_textures.Get(TextureID::kPlat3H);
 	std::unique_ptr<SpriteNode> plat3h_sprite(new SpriteNode(plat3h_texture));
-	plat3h_sprite->setPosition(0.f, 1000.f);
+	plat3h_sprite->setPosition(50.f, 150.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3h_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3h_sprite));
@@ -452,19 +452,11 @@ void World::BuildScene()
 	//3I
 	sf::Texture& plat3i_texture = m_textures.Get(TextureID::kPlat3I);
 	std::unique_ptr<SpriteNode> plat3i_sprite(new SpriteNode(plat3i_texture));
-	plat3i_sprite->setPosition(0.f, 1000.f);
+	plat3i_sprite->setPosition(500.f, 150.f);
 	//ET:collisions with platfroms
 	m_platforms.push_back(plat3i_sprite.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3i_sprite));
 
-	//3J
-	sf::Texture& plat3j_texture = m_textures.Get(TextureID::kPlat3J);
-	std::unique_ptr<SpriteNode> plat3j_sprite(new SpriteNode(plat3j_texture));
-	plat3a_sprite->setPosition(0.f, 1000.f);
-	//ET:collisions with platfroms
-	m_platforms.push_back(plat3j_sprite.get());
-	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(plat3j_sprite));
-	
 
 	//Add the finish line
 	sf::Texture& finish_texture = m_textures.Get(TextureID::kFinishLine);
