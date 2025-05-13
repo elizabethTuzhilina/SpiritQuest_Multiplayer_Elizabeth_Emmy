@@ -169,6 +169,7 @@
     <ClCompile Include="SpriteNode.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateStack.cpp" />
+    <ClCompile Include="TagState.cpp" />
     <ClCompile Include="TextNode.cpp" />
     <ClCompile Include="TextureHolder.cpp" />
     <ClCompile Include="TitleState.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="State.hpp" />
     <ClInclude Include="StateID.hpp" />
     <ClInclude Include="StateStack.hpp" />
+    <ClInclude Include="TagState.hpp" />
     <ClInclude Include="TextNode.hpp" />
     <ClInclude Include="TextureHolder.hpp" />
     <ClInclude Include="TextureID.hpp" />

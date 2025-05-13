@@ -27,6 +27,8 @@ public:
 	void HandleNetworkEvent(Action action, CommandQueue& commands);
 	void HandleNetworkRealtimeChange(Action action, bool action_enabled);
 
+	void SetName(std::string name);
+	std::string GetName() const { return m_name; };
 	void SetMissionStatus(MissionStatus status);
 	MissionStatus GetMissionStatus() const;
 
@@ -43,6 +45,7 @@ private:
 	std::map<Action, bool> m_action_proxies;
 	MissionStatus m_current_mission_status;
 
+	std::string m_name;
 	int m_identifier;
 	sf::TcpSocket* m_socket;
 	//ID m_id;//player1 /2 ids

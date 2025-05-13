@@ -122,6 +122,10 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 
 }
 
+void Player::SetName(std::string name)
+{
+    m_name = name.substr(0, 4);
+}
 
 void Player::HandleEvent(const sf::Event& event, CommandQueue& commands)
 {

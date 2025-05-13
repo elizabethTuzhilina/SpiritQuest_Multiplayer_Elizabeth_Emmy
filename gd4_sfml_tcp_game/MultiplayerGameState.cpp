@@ -10,23 +10,24 @@
 #include "PickupType.hpp"
 #include <iostream>
 
-sf::IpAddress GetAddressFromFile()
+std::pair<sf::IpAddress, std::string> GetAddressFromFile()
 {
 	{
 		//Try to open existing file
 		std::ifstream input_file("ip.txt.txt");
-		std::string ip_address;
-		if (input_file >> ip_address)
+		std::string ip_address, nametag;
+		if (input_file >> ip_address >> nametag)
 		{
-			return ip_address;
+			return std::pair<sf::IpAddress, std::string>(ip_address, nametag);
 		}
 	}
 
 	//If the open/read failed, create a new file
 	std::ofstream output_file("ip.txt.txt");
 	std::string local_address = "127.0.0.1";
-	output_file << local_address;
-	return local_address;
+	std::string nametag = "Tag";
+	output_file << local_address << nametag;
+	return std::pair<sf::IpAddress, std::string>(local_address, nametag);
 
 }
 
@@ -35,6 +36,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	, m_world(*context.window, *context.fonts, *context.sounds, true)
 	, m_window(*context.window)
 	, m_texture_holder(*context.textures)
+	, m_player(*context.player)
 	, m_connected(false)
 	, m_game_server(nullptr)
 	, m_active_state(true)
@@ -71,14 +73,15 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	//If this is the host, create a server
 	sf::IpAddress ip;
 
+	auto file_info = GetAddressFromFile();
+
+	ip = file_info.first;
+	m_player.SetName(file_info.second);
+
 	if (m_host)
 	{
 		m_game_server.reset(new GameServer(sf::Vector2f(m_window.getSize())));
-		ip = "127.0.0.1";
-	}
-	else
-	{
-		ip = GetAddressFromFile();
+		
 	}
 
 	if (m_socket.connect(ip, SERVER_PORT, sf::seconds(5.f)) == sf::TcpSocket::Done)
@@ -365,11 +368,37 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		sf::Vector2f aircraft_position;
 		
 		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
-		Character* character = m_world.AddCharacter(aircraft_identifier);
+		Character* character = m_world.AddCharacter(aircraft_identifier, m_player.GetName());;
 		character->setPosition(aircraft_position);
 		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, GetContext().keys1));
+
+		sf::Packet name_packet;
+		name_packet << static_cast<sf::Int16>(Client::PacketType::kRequestNameSync);
+		name_packet << m_player.GetName();
+
+		m_socket.send(name_packet);
 		m_local_player_identifiers.push_back(aircraft_identifier);
 		m_game_started = true;
+
+		break;
+	}
+	case Server::PacketType::kNameSync: {
+		sf::Int16 amount;
+		packet >> amount;
+		
+
+		for (sf::Int32 i = 0; i < amount; i++)
+		{
+			sf::Int32 id;
+			std::string name;
+			packet >> id >> name;
+
+			if (id == m_local_player_identifiers[i]) continue;
+
+			m_world.GetCharacter(id)->SetName(name);
+		}
+
+		
 	}
 	break;
 
@@ -380,7 +409,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		
 		packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
 
-		Character* character = m_world.AddCharacter(aircraft_identifier);
+		Character* character = m_world.AddCharacter(aircraft_identifier, m_player.GetName());
 		character->setPosition(aircraft_position);
 		m_players[aircraft_identifier].reset(new Player(&m_socket, aircraft_identifier, nullptr));
 	}
@@ -414,7 +443,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Vector2f character_position;
 			packet >> character_identifier >> character_position.x >> character_position.y >> hitpoints >> missile_ammo >> character_type;
 
-			Character* character = m_world.AddCharacter(character_identifier);
+			Character* character = m_world.AddCharacter(character_identifier, std::to_string(character_identifier));
 			character->setPosition(character_position);
 			character->SetHitpoints(hitpoints);
 			//character->SetMissileAmmo(missile_ammo);
@@ -430,7 +459,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		
 		packet >> character_identifier;
 
-		m_world.AddCharacter(character_identifier);
+		m_world.AddCharacter(character_identifier, m_player.GetName());
 		m_players[character_identifier].reset(new Player(&m_socket, character_identifier, GetContext().keys2));
 		m_local_player_identifiers.emplace_back(character_identifier);
 	}

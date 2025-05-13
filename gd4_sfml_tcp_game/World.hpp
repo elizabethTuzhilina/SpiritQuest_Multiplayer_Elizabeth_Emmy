@@ -32,7 +32,7 @@ public:
 	CommandQueue& GetCommandQueue();
 
 
-	Character* AddCharacter(int identifier);
+	Character* AddCharacter(int identifier, std::string name);
 	void RemoveCharacter(int identifier);
 	void SetCurrentBattleFieldPosition(float line_y);
 	void SetWorldHeight(float height);

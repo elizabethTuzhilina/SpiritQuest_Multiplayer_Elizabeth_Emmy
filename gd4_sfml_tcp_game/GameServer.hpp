@@ -28,6 +28,7 @@ private:
 		std::vector<sf::Int32> m_aircraft_identifiers;
 		bool m_ready;
 		bool m_timed_out;
+		std::string m_name;
 	};
 
 	struct AircraftInfo
@@ -80,5 +81,4 @@ private:
 
 	sf::Time m_last_spawn_time;
 	sf::Time m_time_for_next_spawn;
-
 };

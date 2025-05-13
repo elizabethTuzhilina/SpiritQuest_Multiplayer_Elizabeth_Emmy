@@ -10,7 +10,7 @@ GameState::GameState(StateStack& stack, Context context)
 	m_player(nullptr, 1, context.keys1)  
 {
 	context.player = &m_player; 
-	m_world.AddCharacter(1);  // add the character separately
+	m_world.AddCharacter(1, "EMMY");  // add the character separately
 	m_player.SetMissionStatus(MissionStatus::kMissionRunning);
 	
 	//Play Music
@@ -64,12 +64,12 @@ bool GameState::Update(sf::Time dt)
 	if (ghostCount == 0 && reaperCount > 0)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessReaperCG);
-		RequestStackPush(StateID::kGameOver);
+		//RequestStackPush(StateID::kGameOver);
 	}
 	else if (ghostReachedFinish || reaperCount == 0)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessGhostFL);
-		RequestStackPush(StateID::kGameOver);
+		//RequestStackPush(StateID::kGameOver);
 	}
 
 	

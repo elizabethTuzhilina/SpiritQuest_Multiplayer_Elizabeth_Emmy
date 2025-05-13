@@ -381,8 +381,36 @@ void GameServer::HandleIncomingPacket(sf::Packet& packet, RemotePeer& receiving_
 			SendToAll(packet);
 		}
 	}
-	}
+	break;
 
+	case Client::PacketType::kRequestNameSync: 
+	{
+		std::string name;
+		packet >> name;
+
+		//Check if the name is already taken
+		for (std::size_t i = 0; i < m_connected_players; ++i)
+		{
+			if (m_peers[i]->m_name == name)
+			{
+				name = "Player" + std::to_string(i);
+				break;
+			}
+		}
+
+		receiving_peer.m_name = name;
+
+		sf::Packet namepacket;
+		namepacket << static_cast<sf::Int32>(Server::PacketType::kNameSync);
+		namepacket << name;
+
+		m_peers[0]->m_socket.send(namepacket);
+
+		SendToAll(namepacket);
+		
+	}
+	}
+	
 }
 
 void GameServer::HandleIncomingConnections()

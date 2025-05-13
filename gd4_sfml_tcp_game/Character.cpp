@@ -89,6 +89,14 @@ Character::Character(CharacterType type, const TextureHolder& textures, FontHold
 	m_spirit_energy_display = spirit_energy_display.get();
 	AttachChild(std::move(spirit_energy_display));
 
+	std::string name = "TAG" + std::to_string(m_identifier);
+	std::unique_ptr<TextNode> name_display(new TextNode(fonts, name));
+	name_display->SetString(name);
+	m_name_display = name_display.get();
+	m_name_display->setPosition(0, -30.f);
+
+	AttachChild(std::move(name_display));
+
 	if (Character::GetCategory() == static_cast<int>(ReceiverCategories::kPlayer1))
 	{
 		std::string* missile_ammo = new std::string("");
@@ -150,6 +158,7 @@ void Character::UpdateTexts()
 	if (IsDestroyed())
 	{
 		m_spirit_energy_display->SetString("");
+		m_name_display->SetString("");
 	}
 	else
 	{
@@ -278,7 +287,7 @@ void Character::CreateProjectile(SceneNode& node, ProjectileType type, float x_o
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().width, y_offset * m_sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
-	sf::Vector2f shield(5, 5);
+	sf::Vector2f shield(60, 60);
 	
 
 	switch (GetBulletDirection())
