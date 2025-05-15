@@ -104,7 +104,7 @@ void World::Draw()
 	{
 		m_target.setView(m_camera);
 		m_target.draw(m_scenegraph);
-	}
+	}/*
 #ifdef _DEBUG
 	for (auto* platform : m_platforms)
 	{
@@ -117,7 +117,7 @@ void World::Draw()
 		rect.setOutlineThickness(2.f);
 		m_target.draw(rect);
 	}
-#endif
+#endif*/
 }
 
 Character* World::GetCharacter(int identifier) const
