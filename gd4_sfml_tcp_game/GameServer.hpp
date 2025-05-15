@@ -28,6 +28,7 @@ private:
 		std::vector<sf::Int32> m_aircraft_identifiers;
 		bool m_ready;
 		bool m_timed_out;
+		bool game_ready;
 		std::string m_name;
 	};
 
@@ -78,7 +79,9 @@ private:
 	std::vector<PeerPtr> m_peers;
 	sf::Int32 m_aircraft_identifer_counter;
 	bool m_waiting_thread_end;
+	
 
 	sf::Time m_last_spawn_time;
 	sf::Time m_time_for_next_spawn;
+	bool m_game_started;
 };

@@ -678,3 +678,13 @@ int World::CountCharacters(CharacterType type) const
 					(type == CharacterType::kReaper && c->IsReaper()));
 		});
 }
+
+int World::GetPlayers() const
+{
+	int count = 0;
+	for (Character* player : m_player_aircraft)
+	{
+		count++;
+	}
+	return count;
+}

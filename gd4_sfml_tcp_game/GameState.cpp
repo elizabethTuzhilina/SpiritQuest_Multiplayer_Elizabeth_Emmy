@@ -3,14 +3,20 @@
 #include "GameState.hpp"
 #include "Player.hpp"
 #include "MissionStatus.hpp"
+#include <iostream>
+#include <fstream>
 
 GameState::GameState(StateStack& stack, Context context)
 	: State(stack, context),
 	m_world(*context.window, *context.fonts, *context.sounds, false),
 	m_player(nullptr, 1, context.keys1)  
 {
+	std::ifstream input_file("ip.txt.txt");
+	std::string ip_address, nametag;
+	nametag = "EMMY";
+	input_file >> ip_address >> nametag;
 	context.player = &m_player; 
-	m_world.AddCharacter(1, "EMMY");  // add the character separately
+	m_world.AddCharacter(1, nametag);  // add the character separately
 	m_player.SetMissionStatus(MissionStatus::kMissionRunning);
 	
 	//Play Music
@@ -61,15 +67,15 @@ bool GameState::Update(sf::Time dt)
 	int reaperCount = m_world.CountCharacters(CharacterType::kReaper);
 	bool ghostReachedFinish = m_world.HasPlayerReachedEnd();
 
-	if (ghostCount == 0 && reaperCount > 0)
+	if (ghostCount == 0 && reaperCount > 0 && m_world.GetPlayers()>2)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessReaperCG);
-		//RequestStackPush(StateID::kGameOver);
+		RequestStackPush(StateID::kGameOver);
 	}
-	else if (ghostReachedFinish || reaperCount == 0)
+	else if (ghostReachedFinish || reaperCount == 0 && m_world.GetPlayers() > 2)
 	{
 		GetContext().player->SetMissionStatus(MissionStatus::kMissionSuccessGhostFL);
-		//RequestStackPush(StateID::kGameOver);
+		RequestStackPush(StateID::kGameOver);
 	}
 
 	

@@ -5,6 +5,7 @@ enum class StateID
 	kNone,
 	kTitle,
 	kMenu,
+	kLoading,
 	kGame,
 	kPause,
 	kSettings,

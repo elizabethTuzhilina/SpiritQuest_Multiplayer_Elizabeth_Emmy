@@ -32,6 +32,7 @@ GameServer::GameServer(sf::Vector2f battlefield_size)
 	, m_waiting_thread_end(false)
 	, m_last_spawn_time(sf::Time::Zero)
 	, m_time_for_next_spawn(sf::seconds(5.f))
+	, m_game_started(false)
 {
 	m_listener_socket.setBlocking(false);
 	m_peers[0].reset(new RemotePeer());
@@ -138,14 +139,40 @@ void GameServer::ExecutionThread()
 		//Fixed update step
 		while (frame_time >= frame_rate)
 		{
-			m_battlefield_rect.top += m_battlefield_scrollspeed * frame_rate.asSeconds();
-			frame_time -= frame_rate;
+			if (m_game_started)
+			{ 
+				m_battlefield_rect.top += m_battlefield_scrollspeed * frame_rate.asSeconds();
+				frame_time -= frame_rate;
+			}
 		}
 
 		//Fixed tick step
 		while (tick_time >= tick_rate)
 		{
-			Tick();
+			if (m_game_started)
+			{
+				Tick();
+				
+			}
+			else
+			{
+				BroadcastMessage("Game not ready!");
+				sf::Int16 amount_ready = 0;
+				for (sf::Int16 i = 0; i < m_connected_players; ++i)
+				{
+					if (m_peers[i]->game_ready)
+					{
+						amount_ready++;
+					}
+				}
+				if (amount_ready == m_connected_players)
+				{
+					sf::Packet ready_packet;
+					ready_packet << static_cast<sf::Int16>(Server::PacketType::kGameReady);
+					SendToAll(ready_packet);
+					m_game_started = true;
+				}
+			}
 			tick_time -= tick_rate;
 		}
 
@@ -259,6 +286,8 @@ void GameServer::HandleIncomingPackets()
 				peer->m_timed_out = true;
 				detected_timeout = true;
 			}
+
+
 
 		}
 	}

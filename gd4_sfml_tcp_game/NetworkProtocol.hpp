@@ -19,7 +19,8 @@ namespace Server
 		kSpawnSelf, //This takes an sf::Int32 for the aircraft identifier and two float values for the initial position. 
 		kUpdateClientState, //This takes one float with the current scrolling of the world in the server, and then a sf::Int32 for the number of aircraft. For each aircraft, it packs one sf::Int32 value with the identifier, two floats for position, health, and ammo. Think about enemies. If we don't send anything they will be locally tracked
 		kMissionSuccess, // This has no arguments. It just informs the client that the game is over and the client can show the appropriate state
-		kMissionRunning
+		kMissionRunning,
+		kGameReady
 	};
 }
 
@@ -27,6 +28,7 @@ namespace Client
 {
 	enum class PacketType
 	{
+		kReadyNotice,
 		kRequestNameSync,
 		kPlayerEvent, // Two sf::Int32, aircraft identifer and event. It is used to request the server to trigger an event on the aircraft
 		kPlayerRealtimeChange, // The same kPlayerEvent, additionally takes a boolean for real time action

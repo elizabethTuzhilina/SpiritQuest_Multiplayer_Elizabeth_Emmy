@@ -130,7 +130,10 @@ bool MultiplayerGameState::Update(sf::Time dt)
 	//Connected to the Server: Handle all the network logic
 	if (m_connected)
 	{
-		m_world.Update(dt);
+		if (m_game_started)
+		{
+			m_world.Update(dt);
+		}
 
 		//Remove players whose aircraft were destroyed
 		bool found_local_plane = false;
@@ -264,12 +267,15 @@ bool MultiplayerGameState::HandleEvent(const sf::Event& event)
 		pair.second->HandleEvent(event, commands);
 	}
 
-	if (event.type == sf::Event::KeyPressed)
+	if (event.key.code == sf::Keyboard::Return && m_connected && !m_game_started)
 	{
 		//If enter pressed, add second player co-op only if there is only 1 player
 		if (event.key.code == sf::Keyboard::Return && m_local_player_identifiers.size() == 1)
 		{
 			sf::Packet packet;
+			packet << static_cast<sf::Int16>(Client::PacketType::kReadyNotice);
+			m_socket.send(packet);
+
 			packet << static_cast<sf::Int32>(Client::PacketType::kRequestCoopPartner);
 			m_socket.send(packet);
 		}
@@ -344,6 +350,10 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 {
 	switch (static_cast<Server::PacketType>(packet_type))
 	{
+	case Server::PacketType::kGameReady: {
+		m_game_started = true;
+		break;
+	}
 		//Send message to all Clients
 	case Server::PacketType::kBroadcastMessage:
 	{
@@ -378,7 +388,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 
 		m_socket.send(name_packet);
 		m_local_player_identifiers.push_back(aircraft_identifier);
-		m_game_started = true;
+		//m_game_started = true;
 
 		break;
 	}

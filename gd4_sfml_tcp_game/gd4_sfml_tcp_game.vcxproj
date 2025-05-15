@@ -149,6 +149,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="KeyBinding.cpp" />
     <ClCompile Include="Label.cpp" />
+    <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MultiplayerGameState.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="KeyBinding.hpp" />
     <ClInclude Include="Label.hpp" />
+    <ClInclude Include="LoadingState.hpp" />
     <ClInclude Include="MenuOptions.hpp" />
     <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MissionStatus.hpp" />

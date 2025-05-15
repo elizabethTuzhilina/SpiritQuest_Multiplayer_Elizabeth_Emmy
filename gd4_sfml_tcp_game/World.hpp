@@ -45,6 +45,7 @@ public:
 	sf::FloatRect GetBattleFieldBounds() const;
 	bool PollGameAction(GameActions::Action& out);
 	int CountCharacters(CharacterType type) const;
+	int GetPlayers() const;
 	
 
 private:
